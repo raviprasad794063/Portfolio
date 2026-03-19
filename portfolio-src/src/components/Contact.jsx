@@ -75,6 +75,22 @@ export default function Contact() {
 
       <footer className="footer">
         <span className="footer-copy">(c) 2026 Ravi Ranjan Prasad</span>
+        <a
+          href="https://www.linkedin.com/in/ravi-prasad-3b1271281"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="footer-copy"
+        >
+          Ravi Ranjan Prasad on LinkedIn
+        </a>
+        <a
+          href="https://github.com/raviprasad794063"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="footer-copy"
+        >
+          Ravi Ranjan Prasad on GitHub
+        </a>
         <span className="footer-depth">DEPTH: INFINITE</span>
       </footer>
     </>
