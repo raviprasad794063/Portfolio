@@ -7,6 +7,7 @@ export default defineConfig({
     react(),
     sitemap({
       hostname: 'https://raviranjanprasad.vercel.app',
+      exclude: ['/googled765d8e40f0f99af'],
     }),
   ],
   publicDir: 'Public',
