@@ -158,7 +158,7 @@ function CertCard({ cert, index, duplicate = false }) {
       <div className="cert-footer">
         {cert.verified ? (
           <a href={cert.verified} target="_blank" rel="noreferrer" className="cert-verify-link">
-            {cert.actionLabel} ->
+            {cert.actionLabel} -&gt;
           </a>
         ) : (
           <span className="cert-verify-pending">{cert.actionLabel}</span>
