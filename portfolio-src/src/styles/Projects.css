@@ -1,0 +1,230 @@
+/* Projects.css */
+.projects {
+  position: relative;
+  z-index: 10;
+  padding: 8rem 5vw;
+  min-height: 100vh;
+}
+
+.projects-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* ── Section header ── */
+.section-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--caustic-gold);
+  font-weight: 700;
+  margin-bottom: 0.9rem;
+}
+
+.section-eyebrow::before {
+  content: '';
+  display: block;
+  width: 28px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--caustic-gold), transparent);
+}
+
+.section-heading {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text-surface);
+  margin-bottom: 0.5rem;
+}
+
+.section-heading em {
+  font-style: italic;
+  color: var(--caustic-pale);
+}
+
+.section-sub {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-bottom: 4rem;
+  font-weight: 300;
+}
+
+/* ── Project cards grid ── */
+.projects-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.project-card {
+  background: var(--card-glass);
+  border: 1px solid rgba(45, 158, 110, 0.16);
+  border-radius: 6px;
+  overflow: hidden;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  transition:
+    border-color 0.4s ease,
+    transform 0.4s cubic-bezier(.16,.58,.48,.98),
+    box-shadow 0.4s ease;
+  cursor: default;
+}
+
+.project-card:hover {
+  border-color: rgba(212, 168, 67, 0.3);
+  transform: translateY(-6px);
+  box-shadow:
+    0 28px 64px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(212, 168, 67, 0.08),
+    inset 0 1px 0 rgba(212, 168, 67, 0.1);
+}
+
+/* ── Canvas viz area ── */
+.project-viz {
+  width: 100%;
+  height: 180px;
+  position: relative;
+  overflow: hidden;
+  background: rgba(4, 15, 13, 0.5);
+}
+
+.project-viz canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.project-viz-label {
+  position: absolute;
+  bottom: 0.7rem;
+  right: 0.9rem;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  color: var(--caustic-gold);
+  font-weight: 700;
+  opacity: 0.82;
+  text-transform: uppercase;
+}
+
+/* ── Card body ── */
+.project-body {
+  padding: 1.8rem 2rem 2rem;
+}
+
+.project-index {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--jade-bright);
+  opacity: 0.6;
+  margin-bottom: 0.7rem;
+}
+
+.project-title {
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-surface);
+  margin-bottom: 0.3rem;
+}
+
+.project-tagline {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--jade-bright);
+  font-weight: 400;
+  margin-bottom: 1.1rem;
+  font-style: italic;
+}
+
+.project-desc {
+  font-size: 0.9rem;
+  line-height: 1.78;
+  color: var(--text-muted);
+  font-weight: 300;
+  margin-bottom: 1.5rem;
+}
+
+.project-highlights {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.project-highlight {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  font-size: 0.83rem;
+  color: var(--text-mid);
+  font-weight: 300;
+}
+
+.highlight-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--caustic-gold);
+  margin-top: 0.45rem;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px var(--caustic-gold);
+}
+
+.project-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid rgba(45,158,110,0.12);
+}
+
+.project-actions {
+  margin-top: 1rem;
+}
+
+.project-link {
+  display: inline-flex;
+  align-items: center;
+  color: var(--caustic-gold);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.project-link:hover {
+  color: var(--caustic-pale);
+}
+
+.stack-tag {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  padding: 0.28rem 0.7rem;
+  border: 1px solid rgba(45, 158, 110, 0.22);
+  color: var(--jade-bright);
+  border-radius: 2px;
+  background: rgba(45, 158, 110, 0.05);
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.project-card:hover .stack-tag {
+  border-color: rgba(212, 168, 67, 0.25);
+  color: var(--caustic-pale);
+}
+
+@media (max-width: 768px) {
+  .projects-grid { grid-template-columns: 1fr; }
+}

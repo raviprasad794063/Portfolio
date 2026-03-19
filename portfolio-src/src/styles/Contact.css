@@ -1,0 +1,131 @@
+/* Contact.css */
+.contact {
+  position: relative;
+  z-index: 10;
+  padding: 8rem 5vw 6rem;
+  background: linear-gradient(to bottom, transparent, rgba(4, 15, 13, 0.75));
+}
+
+.contact-inner {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.contact-heading {
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 5.5vw, 4.5rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  color: var(--text-surface);
+  margin-bottom: 1rem;
+}
+
+.contact-heading em {
+  font-style: italic;
+  color: var(--caustic-pale);
+}
+
+.contact-sub {
+  font-size: 1rem;
+  color: var(--text-muted);
+  line-height: 1.75;
+  font-weight: 300;
+  margin-bottom: 3.5rem;
+  max-width: 400px;
+}
+
+.contact-divider {
+  width: 48px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--caustic-gold), transparent);
+  margin-bottom: 2.5rem;
+  opacity: 0.6;
+}
+
+.contact-links {
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-link {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.3rem 0;
+  border-bottom: 1px solid rgba(45, 158, 110, 0.12);
+  text-decoration: none;
+  transition: padding-left 0.35s cubic-bezier(.16,.58,.48,.98);
+}
+
+.contact-link:first-child {
+  border-top: 1px solid rgba(45, 158, 110, 0.12);
+}
+
+.contact-link:hover {
+  padding-left: 0.7rem;
+}
+
+.contact-link-label {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--caustic-gold);
+  opacity: 0.65;
+  width: 72px;
+  flex-shrink: 0;
+}
+
+.contact-link-value {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--text-mid);
+  transition: color 0.25s;
+}
+
+.contact-link:hover .contact-link-value {
+  color: var(--caustic-pale);
+}
+
+.contact-link-arrow {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--caustic-gold);
+  opacity: 0;
+  transition: opacity 0.25s, transform 0.25s;
+}
+
+.contact-link:hover .contact-link-arrow {
+  opacity: 1;
+  transform: translateX(4px);
+}
+
+/* Footer */
+.footer {
+  position: relative;
+  z-index: 10;
+  padding: 1.8rem 5vw;
+  border-top: 1px solid rgba(45, 158, 110, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-copy {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  letter-spacing: 0.12em;
+  opacity: 0.4;
+}
+
+.footer-depth {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--caustic-gold);
+  letter-spacing: 0.2em;
+  opacity: 0.35;
+}

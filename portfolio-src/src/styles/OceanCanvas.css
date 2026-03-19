@@ -1,0 +1,124 @@
+/* OceanCanvas.css */
+.ocean-canvas-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* ── Layered depth gradients ── */
+.ocean-layer-base {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom,
+    #0a3328 0%,
+    #093d38 18%,
+    #072e2a 40%,
+    #051e1b 65%,
+    #040f0d 100%);
+}
+
+/* ── Caustic light rays (from illustration's top-center sunburst) ── */
+.caustic-rays {
+  position: absolute;
+  top: -10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 140%;
+  height: 75%;
+  pointer-events: none;
+}
+
+.ray {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform-origin: top center;
+  width: 1px;
+  border-radius: 0 0 80px 80px;
+  animation: caustic-pulse var(--dur, 4s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+/* ── Organic seabed silhouette ── */
+.seabed {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 220px;
+  pointer-events: none;
+}
+
+/* ── Floating particles ── */
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: float-up var(--dur, 18s) linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+/* ── Depth overlay that deepens on scroll ── */
+.depth-veil {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: linear-gradient(to bottom,
+    transparent 0%,
+    rgba(4, 15, 13, 0) 30%,
+    rgba(4, 15, 13, 0.6) 100%);
+  transition: opacity 0.5s ease;
+}
+
+/* ── Canopy foliage silhouette (top) ── */
+.canopy {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 200px;
+  pointer-events: none;
+  opacity: 0.22;
+}
+
+/* ── Cursor ── */
+.cursor-wrap {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: screen;
+}
+
+.cursor-core {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  background: var(--caustic-pale, #e8d5a0);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 10px rgba(212,168,67,0.8), 0 0 22px rgba(212,168,67,0.4);
+}
+
+.cursor-ring {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(212, 168, 67, 0.45);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition:
+    width 0.22s cubic-bezier(.16,.58,.48,.98),
+    height 0.22s cubic-bezier(.16,.58,.48,.98),
+    border-color 0.22s ease;
+}
+
+.cursor-ring.hover {
+  width: 52px;
+  height: 52px;
+  border-color: rgba(212, 168, 67, 0.8);
+}

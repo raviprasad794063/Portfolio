@@ -1,0 +1,126 @@
+/* ═══════════════════════════════════════════════════════
+   GLOBALS — Ocean Palette from Illustration
+   Warm caustic jade + deep teal + golden light
+═══════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400;1,600&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap');
+
+:root {
+  /* ── Depth palette (from illustration) ── */
+  --surface-light:   #c8e8c0;   /* bright canopy light */
+  --caustic-gold:    #d4a843;   /* sunray warm gold */
+  --caustic-pale:    #e8d5a0;   /* pale water-surface glow */
+  --jade-bright:     #2d9e6e;   /* bright underwater green */
+  --jade-mid:        #1a7a55;   /* mid jade */
+  --teal-core:       #0d5c52;   /* core teal water */
+  --teal-deep:       #093d38;   /* deep teal */
+  --abyss-green:     #061e1a;   /* near-black floor */
+  --abyss:           #040f0d;   /* absolute dark */
+
+  /* ── Accent / UI ── */
+  --glow-caustic:    rgba(212, 168, 67, 0.6);
+  --glow-jade:       rgba(45, 158, 110, 0.5);
+  --text-surface:    #f0f7ee;
+  --text-mid:        #a8cfc0;
+  --text-muted:      #5a9080;
+  --border-subtle:   rgba(45, 158, 110, 0.18);
+  --card-glass:      rgba(9, 61, 56, 0.55);
+
+  /* ── Typography ── */
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-mono:    'DM Mono', 'Courier New', monospace;
+  --font-body:    'DM Sans', sans-serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  background: var(--abyss);
+  color: var(--text-surface);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+::selection {
+  background: rgba(45, 158, 110, 0.35);
+  color: var(--caustic-pale);
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--abyss); }
+::-webkit-scrollbar-thumb {
+  background: var(--teal-core);
+  border-radius: 2px;
+}
+
+/* ── Utility classes ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(36px);
+  transition:
+    opacity 0.9s cubic-bezier(.16,.58,.48,.98),
+    transform 0.9s cubic-bezier(.16,.58,.48,.98);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-36px);
+  transition:
+    opacity 0.9s cubic-bezier(.16,.58,.48,.98),
+    transform 0.9s cubic-bezier(.16,.58,.48,.98);
+}
+
+.reveal-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.delay-1 { transition-delay: 0.15s !important; }
+.delay-2 { transition-delay: 0.30s !important; }
+.delay-3 { transition-delay: 0.48s !important; }
+.delay-4 { transition-delay: 0.65s !important; }
+
+@keyframes float-up {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 0.6; }
+  100% { transform: translateY(-110vh) rotate(12deg); opacity: 0; }
+}
+
+@keyframes caustic-pulse {
+  0%, 100% { opacity: 0.12; transform: scaleX(1); }
+  50%       { opacity: 0.28; transform: scaleX(1.04); }
+}
+
+@keyframes sway {
+  0%, 100% { transform: rotate(-3deg) translateX(0); }
+  50%       { transform: rotate(3deg) translateX(4px); }
+}
+
+@keyframes depth-shimmer {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes pulse-ring {
+  0%   { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(45,158,110,0.4); }
+  70%  { transform: scale(1);    box-shadow: 0 0 0 12px rgba(45,158,110,0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(45,158,110,0); }
+}
