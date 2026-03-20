@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import '../styles/OceanCanvas.css';
 
-/* ── Caustic light rays (inspired by the sunburst in illustration) ── */
+/* -- Caustic light rays (inspired by the sunburst in illustration) -- */
 const RAYS = [
   { angle: -38, width: 60,  opacity: 0.07, dur: '5.5s', delay: '0s'   },
   { angle: -22, width: 90,  opacity: 0.11, dur: '4.2s', delay: '0.8s' },
@@ -12,7 +12,7 @@ const RAYS = [
   { angle:  38, width: 55,  opacity: 0.07, dur: '5.8s', delay: '0.6s' },
 ];
 
-/* ── Floating particles (plankton/debris) ── */
+/* -- Floating particles (plankton/debris) -- */
 function makeParticles(count) {
   return Array.from({ length: count }, (_, i) => ({
     id:    i,
@@ -82,13 +82,13 @@ export default function OceanCanvas({ scrollDepth = 0 }) {
 
   return (
     <>
-      {/* ── Custom Cursor ── */}
+      {/* -- Custom Cursor -- */}
       <div className="cursor-wrap">
         <div ref={coreRef} className="cursor-core" />
         <div ref={ringRef} className={`cursor-ring ${hovering ? 'hover' : ''}`} />
       </div>
 
-      {/* ── Ocean Background ── */}
+      {/* -- Ocean Background -- */}
       <div className="ocean-canvas-wrap">
         <div className="ocean-layer-base" />
 
@@ -156,7 +156,7 @@ export default function OceanCanvas({ scrollDepth = 0 }) {
           preserveAspectRatio="none"
           aria-hidden="true"
         >
-          {/* Back layer – coral/rock shapes */}
+          {/* Back layer � coral/rock shapes */}
           <path
             d="M0,220 L0,160 C40,148 70,155 90,140 C110,125 120,130 140,118
                C180,95 210,110 250,105 C290,100 310,90 360,85
@@ -166,7 +166,7 @@ export default function OceanCanvas({ scrollDepth = 0 }) {
                C1360,60 1400,70 1440,65 L1440,220 Z"
             fill="#061e1a"
           />
-          {/* Mid layer – plants / coral */}
+          {/* Mid layer � plants / coral */}
           <path
             d="M0,220 L0,180 C30,175 50,185 80,178 C120,170 140,162 180,170
                C220,178 250,168 290,172 C330,176 360,165 400,170
@@ -198,7 +198,7 @@ export default function OceanCanvas({ scrollDepth = 0 }) {
           ))}
         </svg>
 
-        {/* Depth veil — darkens as you scroll */}
+        {/* Depth veil � darkens as you scroll */}
         <div
           className="depth-veil"
           style={{ opacity: veilOpacity }}

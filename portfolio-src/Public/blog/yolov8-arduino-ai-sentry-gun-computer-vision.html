@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Building an AI Sentry Gun: YOLOv8 Tracking System with Arduino | Ravi Ranjan Prasad</title>
+  <meta name="description" content="A full project walkthrough of an AI sentry gun using YOLOv8 for real-time object tracking, OpenCV face recognition, and Arduino servo control." />
+  <style>
+    :root {
+      --color-background-primary: #061714;
+      --color-background-secondary: rgba(9, 34, 31, 0.92);
+      --color-background-info: rgba(45, 158, 110, 0.08);
+      --color-background-warning: rgba(212, 168, 67, 0.08);
+      --color-background-danger: rgba(226, 75, 74, 0.08);
+      --color-background-success: rgba(29, 158, 117, 0.08);
+      --color-text-primary: #eef7f2;
+      --color-text-secondary: #b6d1c7;
+      --color-text-tertiary: #6f988b;
+      --color-text-info: #98dfbf;
+      --color-text-warning: #e2c072;
+      --color-text-danger: #f19796;
+      --color-text-success: #8ce2bd;
+      --color-border-secondary: rgba(45, 158, 110, 0.16);
+      --color-border-tertiary: rgba(45, 158, 110, 0.12);
+      --color-border-info: rgba(45, 158, 110, 0.28);
+      --color-border-warning: rgba(212, 168, 67, 0.28);
+      --color-border-danger: rgba(226, 75, 74, 0.28);
+      --color-border-success: rgba(29, 158, 117, 0.28);
+      --border-radius-lg: 14px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top, rgba(45, 158, 110, 0.1), transparent 28%),
+        linear-gradient(180deg, #0a3328 0%, #051e1b 42%, #040f0d 100%);
+      color: var(--color-text-primary);
+    }
+
+    a { color: inherit; }
+  </style>
+</head>
+<body>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  .blog-root{font-family:'DM Sans',sans-serif;font-weight:400;color:var(--color-text-primary);max-width:720px;margin:0 auto;padding:2rem 1.5rem 4rem}
+
+  /* ── SEO meta panel ── */
+  .seo-panel{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:2rem}
+  .seo-panel-title{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-text-tertiary);margin-bottom:10px}
+  .seo-row{display:flex;gap:8px;margin-bottom:6px;align-items:flex-start}
+  .seo-row:last-child{margin-bottom:0}
+  .seo-key{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--color-text-tertiary);min-width:100px;padding-top:1px;flex-shrink:0}
+  .seo-val{font-size:12.5px;color:var(--color-text-secondary);line-height:1.5}
+  .seo-val.title-preview{color:var(--color-text-info);font-weight:500;font-size:13px}
+  .seo-val.url-preview{color:var(--color-text-success);font-size:11.5px;font-family:'JetBrains Mono',monospace}
+  .seo-val.desc-preview{color:var(--color-text-secondary)}
+  .keyword-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:2px}
+  .kchip{font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:2px 8px;border-radius:4px;background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);color:var(--color-text-secondary)}
+  .kchip.primary{border-color:var(--color-border-info);color:var(--color-text-info);background:var(--color-background-info)}
+  .serp-preview{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:8px;padding:10px 14px;margin-top:10px}
+  .serp-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+  .serp-url{font-size:11px;color:var(--color-text-success);margin-bottom:2px}
+  .serp-title{font-size:15px;color:var(--color-text-info);font-weight:500;margin-bottom:3px;line-height:1.3}
+  .serp-desc{font-size:12px;color:var(--color-text-secondary);line-height:1.5}
+  .serp-kw em{background:var(--color-background-warning);color:var(--color-text-warning);font-style:normal;padding:0 2px;border-radius:2px}
+
+  /* ── author strip ── */
+  .author-strip{display:flex;align-items:center;gap:14px;padding:1rem 1.25rem;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);margin-bottom:2rem}
+  .author-avatar{width:46px;height:46px;border-radius:50%;background:var(--color-background-info);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;color:var(--color-text-info);flex-shrink:0;font-family:'JetBrains Mono',monospace}
+  .author-meta{flex:1}
+  .author-name{font-size:15px;font-weight:500;color:var(--color-text-primary);margin-bottom:2px}
+  .author-title{font-size:12.5px;color:var(--color-text-secondary);line-height:1.4}
+  .author-github{font-family:'JetBrains Mono',monospace;font-size:11px;padding:3px 9px;border-radius:4px;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary);text-decoration:none;white-space:nowrap}
+
+  .tag-line{display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--color-text-info);background:var(--color-background-info);border:0.5px solid var(--color-border-info);border-radius:4px;padding:4px 10px;margin-bottom:1.5rem}
+  .hero-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3rem);font-weight:700;line-height:1.2;color:var(--color-text-primary);margin-bottom:1rem}
+  .hero-title em{font-style:italic;color:var(--color-text-secondary)}
+  .lede{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:400;line-height:1.7;color:var(--color-text-secondary);margin-bottom:2.5rem}
+  .body-text{font-size:16px;line-height:1.8;color:var(--color-text-primary);margin-bottom:1.25rem}
+  .section-heading{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:.75rem;color:var(--color-text-primary)}
+
+  /* ── feedback loop ── */
+  .loop-wrap{margin:1.5rem 0;overflow-x:auto}
+  .loop-grid{display:flex;flex-wrap:wrap;gap:0;align-items:center;justify-content:center}
+  .loop-node{display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 14px;background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:8px;min-width:90px;text-align:center}
+  .loop-node.highlight{border-color:var(--color-border-info);background:var(--color-background-info)}
+  .loop-node.highlight .ln-label{color:var(--color-text-info)}
+  .loop-node.accent{border-color:var(--color-border-warning);background:var(--color-background-warning)}
+  .loop-node.accent .ln-label{color:var(--color-text-warning)}
+  .ln-icon{font-size:15px;line-height:1}
+  .ln-label{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:500;color:var(--color-text-secondary);line-height:1.3}
+  .loop-arrow{font-size:14px;color:var(--color-text-tertiary);padding:0 4px;align-self:center;flex-shrink:0}
+  .loop-return{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--color-text-tertiary)}
+  .loop-return-line{flex:1;height:1px;background:var(--color-border-tertiary);border-radius:1px;max-width:120px}
+
+  .code-block{font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.7;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:8px;padding:1rem 1.25rem;margin:1.25rem 0;overflow-x:auto;color:var(--color-text-primary)}
+  .code-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-text-tertiary);margin-bottom:6px}
+
+  .callout{border-left:2px solid var(--color-border-info);background:var(--color-background-info);border-radius:0 6px 6px 0;padding:1rem 1.25rem;margin:1.5rem 0}
+  .callout p{font-size:14.5px;line-height:1.7;color:var(--color-text-info);margin:0}
+  .callout.warn{border-left-color:var(--color-border-warning);background:var(--color-background-warning)}
+  .callout.warn p{color:var(--color-text-warning)}
+  .callout.danger{border-left-color:var(--color-border-danger);background:var(--color-background-danger)}
+  .callout.danger p{color:var(--color-text-danger)}
+  .callout.success{border-left-color:var(--color-border-success);background:var(--color-background-success)}
+  .callout.success p{color:var(--color-text-success)}
+
+  .mode-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:1.5rem 0}
+  .mode-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:1rem 1.1rem}
+  .mode-icon{font-size:18px;margin-bottom:8px;display:block}
+  .mode-title{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px}
+  .mode-desc{font-size:12px;color:var(--color-text-secondary);line-height:1.5}
+
+  .servo-comparison{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:1.5rem 0}
+  .servo-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:1rem 1.25rem}
+  .servo-card.bad{border-top:2px solid #E24B4A}
+  .servo-card.good{border-top:2px solid #1D9E75}
+  .servo-label{font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.06em;font-weight:500;margin-bottom:4px}
+  .servo-card.bad .servo-label{color:#E24B4A}
+  .servo-card.good .servo-label{color:#1D9E75}
+  .servo-name{font-size:17px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px}
+  .servo-traits{list-style:none;font-size:13px;color:var(--color-text-secondary);line-height:1.8}
+  .trait-dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:6px;vertical-align:middle}
+  .bad-dot{background:#E24B4A}
+  .good-dot{background:#1D9E75}
+
+  .wiring-table{width:100%;border-collapse:collapse;margin:1.25rem 0;font-size:13.5px}
+  .wiring-table th{text-align:left;font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--color-text-secondary);padding:0 0 8px;border-bottom:0.5px solid var(--color-border-tertiary)}
+  .wiring-table td{padding:8px 0;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary);vertical-align:middle}
+  .wiring-table tr:last-child td{border-bottom:none}
+  .pin-badge{font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:4px;padding:2px 7px;color:var(--color-text-secondary)}
+
+  .problem-grid{display:grid;gap:10px;margin:1.5rem 0}
+  .problem-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .problem-card{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:8px;padding:12px 14px}
+  .problem-title{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--color-text-secondary);margin-bottom:4px}
+  .problem-body{font-size:13.5px;color:var(--color-text-primary);line-height:1.5}
+
+  .pull-quote{font-family:'Playfair Display',serif;font-size:1.35rem;font-style:italic;line-height:1.5;color:var(--color-text-secondary);border-top:0.5px solid var(--color-border-tertiary);border-bottom:0.5px solid var(--color-border-tertiary);padding:1.5rem 0;margin:2.5rem 0;text-align:center}
+  .tag-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:2.5rem;padding-top:1.5rem;border-top:0.5px solid var(--color-border-tertiary)}
+  .tag{font-family:'JetBrains Mono',monospace;font-size:11px;padding:3px 8px;border-radius:4px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary)}
+
+  @media(max-width:520px){
+    .servo-comparison,.problem-row,.mode-grid{grid-template-columns:1fr}
+    .hero-title{font-size:1.75rem}
+    .author-github{display:none}
+    .seo-key{min-width:72px}
+  }
+</style>
+
+<div class="blog-root">
+
+  <!-- SEO META PANEL -->
+  <div class="seo-panel">
+    <div class="seo-panel-title">SEO metadata — paste into your &lt;head&gt;</div>
+
+    <div class="serp-preview">
+      <div class="serp-label">Google SERP preview</div>
+      <div class="serp-url">yourdomain.com › blog › yolov8-arduino-ai-sentry-gun</div>
+      <div class="serp-title">Building an AI Sentry Gun: YOLOv8 Tracking System with Arduino</div>
+      <div class="serp-desc serp-kw">A full build walkthrough of an <em>AI sentry gun</em> using <em>YOLOv8 tracking</em>, OpenCV face recognition, and <em>Arduino object tracking</em> with MG996R servos and a laser module. Real hardware, real constraints.</div>
+    </div>
+
+    <div style="margin-top:12px">
+      <div class="seo-row">
+        <span class="seo-key">title</span>
+        <span class="seo-val title-preview">Building an AI Sentry Gun: YOLOv8 Tracking System with Arduino | Ravi Ranjan Prasad</span>
+      </div>
+      <div class="seo-row">
+        <span class="seo-key">description</span>
+        <span class="seo-val desc-preview">A full project walkthrough of an AI sentry gun using YOLOv8 for real-time object tracking, OpenCV face recognition, and Arduino servo control. Covers hardware integration, servo selection, latency tuning, and laser engagement. Built by an ML engineer.</span>
+      </div>
+      <div class="seo-row">
+        <span class="seo-key">slug</span>
+        <span class="seo-val url-preview">/blog/yolov8-arduino-ai-sentry-gun-computer-vision</span>
+      </div>
+      <div class="seo-row">
+        <span class="seo-key">og:title</span>
+        <span class="seo-val">Building an AI Sentry Gun: YOLOv8 Tracking System with Arduino</span>
+      </div>
+      <div class="seo-row">
+        <span class="seo-key">og:type</span>
+        <span class="seo-val">article</span>
+      </div>
+      <div class="seo-row">
+        <span class="seo-key">target keywords</span>
+        <div>
+          <div class="keyword-chips">
+            <span class="kchip primary">YOLOv8 tracking system</span>
+            <span class="kchip primary">Arduino object tracking</span>
+            <span class="kchip primary">AI sentry gun project</span>
+            <span class="kchip primary">computer vision hardware integration</span>
+            <span class="kchip">pan tilt servo Arduino</span>
+            <span class="kchip">PyFirmata2 servo control</span>
+            <span class="kchip">OpenCV face recognition project</span>
+            <span class="kchip">real-time object detection Python</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:12px;padding-top:12px;border-top:0.5px solid var(--color-border-tertiary)">
+      <div class="seo-panel-title" style="margin-bottom:8px">copy-paste &lt;head&gt; snippet</div>
+      <div class="code-block" style="margin:0;font-size:11.5px">
+&lt;title&gt;Building an AI Sentry Gun: YOLOv8 Tracking System with Arduino&lt;/title&gt;
+&lt;meta name="description" content="Full build walkthrough of an AI sentry gun using YOLOv8 real-time object tracking, OpenCV face recognition, and Arduino servo control with MG996R servos and laser module."&gt;
+&lt;meta name="keywords" content="YOLOv8 tracking system, Arduino object tracking, AI sentry gun, computer vision hardware integration, PyFirmata2, pan tilt servo"&gt;
+&lt;meta name="author" content="Ravi Ranjan Prasad"&gt;
+&lt;link rel="canonical" href="https://yourdomain.com/blog/yolov8-arduino-ai-sentry-gun-computer-vision"&gt;
+
+&lt;!-- Open Graph --&gt;
+&lt;meta property="og:type" content="article"&gt;
+&lt;meta property="og:title" content="Building an AI Sentry Gun: YOLOv8 Tracking System with Arduino"&gt;
+&lt;meta property="og:description" content="Full build walkthrough: YOLOv8 tracking, OpenCV face recognition, Arduino servo control, laser engagement. Real hardware, real constraints."&gt;
+&lt;meta property="og:url" content="https://yourdomain.com/blog/yolov8-arduino-ai-sentry-gun-computer-vision"&gt;
+&lt;meta property="article:author" content="Ravi Ranjan Prasad"&gt;
+
+&lt;!-- Twitter / X card --&gt;
+&lt;meta name="twitter:card" content="summary_large_image"&gt;
+&lt;meta name="twitter:title" content="Building an AI Sentry Gun: YOLOv8 Tracking System with Arduino"&gt;
+&lt;meta name="twitter:description" content="YOLOv8 + OpenCV + Arduino + laser module. How I built a pan-tilt turret that tracks objects and recognises faces in real time."&gt;</div>
+    </div>
+  </div>
+
+  <!-- AUTHOR STRIP -->
+  <div class="author-strip">
+    <div class="author-avatar">RR</div>
+    <div class="author-meta">
+      <div class="author-name">Ravi Ranjan Prasad</div>
+      <div class="author-title">ML Engineer · Real-time intelligent systems · YOLOv8 · Arduino · Embedded CV</div>
+    </div>
+    <a class="author-github" href="https://github.com/raviprasad794063/automated-sentry-gun">View on GitHub ↗</a>
+  </div>
+
+  <div class="tag-line">Project writeup &nbsp;·&nbsp; Embedded Systems &nbsp;·&nbsp; Computer Vision</div>
+
+  <!-- H1 — primary keyword in first 60 chars -->
+  <h1 class="hero-title">Building a YOLOv8 tracking system with Arduino — <em>and what it took to make it physical</em></h1>
+
+  <p class="lede">An AI sentry gun that detects objects, recognises faces, and physically follows its target using pan–tilt servos and a laser module. Here's the full build walkthrough — hardware decisions, software integration, and every mistake in between.</p>
+
+  <!-- Keyword-rich opening paragraph -->
+  <p class="body-text">This is a project about computer vision hardware integration done for real — not a screen demo, but a physical system that moves. The core idea: combine a YOLOv8 real-time object tracking pipeline with an Arduino-controlled servo rig, add OpenCV face recognition, wire in a laser diode, and build a sentry turret that reacts to the world. Two weeks, one pan–tilt mount, four target keywords, and more jitter than I expected.</p>
+
+  <p class="body-text">Most CV tutorials stop at the bounding box. This one starts there and goes all the way to hardware firing a laser on a locked face. Here's everything, in the order it actually happened.</p>
+
+  <h2 class="section-heading">What this AI sentry gun project actually does</h2>
+
+  <p class="body-text">Three distinct operating modes, each doing something meaningfully different:</p>
+
+  <div class="mode-grid">
+    <div class="mode-card">
+      <span class="mode-icon">👤</span>
+      <div class="mode-title">Show Enemy</div>
+      <div class="mode-desc">Capture face images and train a custom recogniser. Enter a name, look at the camera, system learns that person.</div>
+    </div>
+    <div class="mode-card">
+      <span class="mode-icon">🎯</span>
+      <div class="mode-title">Object Shooting</div>
+      <div class="mode-desc">YOLOv8 tracks any object class — person, cup, phone. Turret physically follows. Laser activates on lock.</div>
+    </div>
+    <div class="mode-card">
+      <span class="mode-icon">🔍</span>
+      <div class="mode-title">Track Enemy</div>
+      <div class="mode-desc">Face recognition mode. Hunts for trained faces specifically, ignoring everyone else in the frame.</div>
+    </div>
+  </div>
+
+  <p class="body-text">YOLOv8 gives class-level detection. Face recognition gives identity-level targeting. They're different problems, different pipelines, coexisting in one system.</p>
+
+  <h2 class="section-heading">The real-time feedback loop</h2>
+
+  <p class="body-text">Both tracking modes share one continuous control loop — every component feeds the next, cycling in real time until error reaches zero.</p>
+
+  <div class="loop-wrap">
+    <div class="loop-grid">
+      <div class="loop-node"><span class="ln-icon">📷</span><span class="ln-label">Camera feed</span></div>
+      <span class="loop-arrow">→</span>
+      <div class="loop-node highlight"><span class="ln-icon">🧠</span><span class="ln-label">Detection / recognition</span></div>
+      <span class="loop-arrow">→</span>
+      <div class="loop-node"><span class="ln-icon">📐</span><span class="ln-label">Error calculation</span></div>
+      <span class="loop-arrow">→</span>
+      <div class="loop-node"><span class="ln-icon">⚡</span><span class="ln-label">Arduino signal</span></div>
+      <span class="loop-arrow">→</span>
+      <div class="loop-node"><span class="ln-icon">⚙️</span><span class="ln-label">Servos move</span></div>
+      <span class="loop-arrow">→</span>
+      <div class="loop-node accent"><span class="ln-icon">🔴</span><span class="ln-label">Laser fires</span></div>
+    </div>
+    <div class="loop-return">
+      <div class="loop-return-line"></div>
+      <span>↻ repeats every frame</span>
+      <div class="loop-return-line"></div>
+    </div>
+  </div>
+
+  <h2 class="section-heading">YOLOv8 tracking system: how the detection logic works</h2>
+
+  <p class="body-text">YOLOv8 returns bounding boxes. Extract the center, compare to frame center — the difference is the error. The servos exist to drive that error to zero.</p>
+
+  <div class="code-label">Core error calculation</div>
+  <div class="code-block">error_x = target_center_x - frame_center_x
+error_y = target_center_y - frame_center_y
+# System goal: drive both toward zero, every frame</div>
+
+  <div class="code-label">Arduino object tracking via PyFirmata2 — pin mapping</div>
+  <div class="code-block">from pyfirmata2 import Arduino
+
+board    = Arduino('COM7')
+pan_pin  = board.get_pin('d:9:s')    # X-axis servo
+tilt_pin = board.get_pin('d:10:s')   # Y-axis servo
+laser    = board.get_pin('d:11:o')   # laser / relay module
+
+if abs(error_x) > dead_zone:
+    pan_angle = max(0, min(180, pan_angle + step_x))
+    pan_pin.write(pan_angle)
+
+laser.write(1 if locked else 0)   # engage on lock</div>
+
+  <div class="callout">
+    <p>Don't write to the servos every frame — this floods the Arduino and causes constant jitter. Update only when the error exceeds a threshold, with a short delay between commands. The smoothness difference is dramatic.</p>
+  </div>
+
+  <h2 class="section-heading">OpenCV face recognition: identity-level targeting</h2>
+
+  <p class="body-text">The LBPH recogniser is trained in-app — no cloud, no API, entirely offline. You capture face images, assign a name, and the model distinguishes that person from anyone else. Fast, private, but sensitive to lighting: capture training images in the same environment you'll actually operate in.</p>
+
+  <div class="callout warn">
+    <p>LBPH accuracy drops significantly with lighting changes between training and deployment. Consistent, even light is the single biggest factor — more than distance, more than angle.</p>
+  </div>
+
+  <h2 class="section-heading">Laser and relay engagement — the hardware output</h2>
+
+  <p class="body-text">A laser diode wired to Arduino pin 11 through a relay closes when the target is locked within the dead zone. Manual keypress override also works. Requiring N consecutive locked frames before engaging prevents false triggers entirely.</p>
+
+  <div class="callout danger">
+    <p>Even low-power laser diodes cause eye damage at close range. Use a paper target on a wall, never a person's face. Ensure StandardFirmataPlus is loaded onto the Arduino before connecting PyFirmata2.</p>
+  </div>
+
+  <h2 class="section-heading">Hardware wiring for Arduino object tracking</h2>
+
+  <table class="wiring-table">
+    <tr><th>Component</th><th>Arduino pin</th><th>Notes</th></tr>
+    <tr><td>Pan servo (X-axis)</td><td><span class="pin-badge">D9</span></td><td>MG996R recommended</td></tr>
+    <tr><td>Tilt servo (Y-axis)</td><td><span class="pin-badge">D10</span></td><td>MG996R recommended</td></tr>
+    <tr><td>Laser / relay module</td><td><span class="pin-badge">D11</span></td><td>Digital output, relay switches load</td></tr>
+    <tr><td>Sketch required</td><td>—</td><td>StandardFirmataPlus via Arduino IDE</td></tr>
+  </table>
+
+  <h2 class="section-heading">Servo selection: the part nobody tells you</h2>
+
+  <p class="body-text">SG90 micro servos are in every tutorial. They're also wrong for this build the moment you add any real load.</p>
+
+  <div class="servo-comparison">
+    <div class="servo-card bad">
+      <div class="servo-label">Avoid</div>
+      <div class="servo-name">SG90 micro servo</div>
+      <ul class="servo-traits">
+        <li><span class="trait-dot bad-dot"></span>Low torque</li>
+        <li><span class="trait-dot bad-dot"></span>Can't handle load</li>
+        <li><span class="trait-dot bad-dot"></span>High jitter under stress</li>
+        <li><span class="trait-dot bad-dot"></span>Platform shakes constantly</li>
+      </ul>
+    </div>
+    <div class="servo-card good">
+      <div class="servo-label">Use this instead</div>
+      <div class="servo-name">MG996R servo</div>
+      <ul class="servo-traits">
+        <li><span class="trait-dot good-dot"></span>Higher torque</li>
+        <li><span class="trait-dot good-dot"></span>Handles load well</li>
+        <li><span class="trait-dot good-dot"></span>Smooth controlled motion</li>
+        <li><span class="trait-dot good-dot"></span>Minimum viable for this build</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 class="section-heading">Computer vision hardware integration: four real-time problems</h2>
+
+  <div class="problem-grid">
+    <div class="problem-row">
+      <div class="problem-card">
+        <div class="problem-title">Latency</div>
+        <div class="problem-body">Keep the detection loop lean. Profile face recognition overhead separately from the servo update loop.</div>
+      </div>
+      <div class="problem-card">
+        <div class="problem-title">Jitter</div>
+        <div class="problem-body">Apply a moving average to bounding box centers. Motors shouldn't react to pixel-level frame-to-frame noise.</div>
+      </div>
+    </div>
+    <div class="problem-row">
+      <div class="problem-card">
+        <div class="problem-title">Overcorrection</div>
+        <div class="problem-body">Dead zone + step limit. Ignore small errors; cap how far the servo moves per frame. Stops oscillation.</div>
+      </div>
+      <div class="problem-card">
+        <div class="problem-title">False triggers</div>
+        <div class="problem-body">Confidence threshold + N consecutive locked frames before laser engages. Fixed premature firing completely.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pull-quote">"Machine learning coursework trains you to optimise a model. Nobody teaches you to think about the system around it — the hardware, the latency, the control loop. That's where the real problems live."</div>
+
+  <h2 class="section-heading">What to build next</h2>
+
+  <p class="body-text">PID control to replace threshold-based servo logic. A faster inference pipeline — model quantisation or a Jetson Nano. FaceNet instead of LBPH for lighting-robust face recognition. And if you're reading this as someone who wants to build the same thing: all code is on GitHub.</p>
+
+  <div class="callout success">
+    <p>Starting fresh: use MG996R servos, wire the laser through a relay, upload StandardFirmataPlus before touching PyFirmata2, and capture face training images in your actual operating environment. In that order.</p>
+  </div>
+
+  <div class="tag-list">
+    <span class="tag">yolov8-tracking-system</span>
+    <span class="tag">arduino-object-tracking</span>
+    <span class="tag">ai-sentry-gun</span>
+    <span class="tag">computer-vision-hardware</span>
+    <span class="tag">opencv-face-recognition</span>
+    <span class="tag">pyfirmata2</span>
+    <span class="tag">pan-tilt-servo</span>
+    <span class="tag">laser-diode</span>
+    <span class="tag">tkinter</span>
+    <span class="tag">real-time-detection</span>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -7,7 +7,7 @@
   overflow: hidden;
 }
 
-/* ── Layered depth gradients ── */
+/* -- Layered depth gradients -- */
 .ocean-layer-base {
   position: absolute;
   inset: 0;
@@ -19,7 +19,7 @@
     #040f0d 100%);
 }
 
-/* ── Caustic light rays (from illustration's top-center sunburst) ── */
+/* -- Caustic light rays (from illustration's top-center sunburst) -- */
 .caustic-rays {
   position: absolute;
   top: -10%;
@@ -41,7 +41,7 @@
   animation-delay: var(--delay, 0s);
 }
 
-/* ── Organic seabed silhouette ── */
+/* -- Organic seabed silhouette -- */
 .seabed {
   position: absolute;
   bottom: 0;
@@ -51,7 +51,7 @@
   pointer-events: none;
 }
 
-/* ── Floating particles ── */
+/* -- Floating particles -- */
 .particle {
   position: absolute;
   border-radius: 50%;
@@ -60,7 +60,7 @@
   animation-delay: var(--delay, 0s);
 }
 
-/* ── Depth overlay that deepens on scroll ── */
+/* -- Depth overlay that deepens on scroll -- */
 .depth-veil {
   position: fixed;
   inset: 0;
@@ -73,7 +73,7 @@
   transition: opacity 0.5s ease;
 }
 
-/* ── Canopy foliage silhouette (top) ── */
+/* -- Canopy foliage silhouette (top) -- */
 .canopy {
   position: absolute;
   top: 0;
@@ -84,7 +84,7 @@
   opacity: 0.22;
 }
 
-/* ── Cursor ── */
+/* -- Cursor -- */
 .cursor-wrap {
   position: fixed;
   top: 0;

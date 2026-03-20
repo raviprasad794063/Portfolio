@@ -1,0 +1,218 @@
+.blog-page-shell {
+  --bg: rgba(6, 23, 20, 0.92);
+  --bg-secondary: rgba(10, 39, 35, 0.92);
+  --bg-info: rgba(21, 69, 58, 0.62);
+  --bg-warn: rgba(75, 56, 13, 0.38);
+  --bg-danger: rgba(90, 26, 26, 0.34);
+  --bg-success: rgba(19, 77, 49, 0.34);
+  --text: #eff7f2;
+  --text-sec: #c5d8d1;
+  --text-ter: #86a39a;
+  --text-info: #8fd7ba;
+  --text-warn: #ebcb81;
+  --text-danger: #f4a7a6;
+  --text-success: #9be2bb;
+  --border: rgba(130, 187, 165, 0.16);
+  --border-sec: rgba(191, 216, 205, 0.22);
+  --border-info: rgba(93, 191, 149, 0.28);
+  --border-warn: rgba(235, 203, 129, 0.28);
+  --border-danger: rgba(244, 167, 166, 0.28);
+  --border-success: rgba(155, 226, 187, 0.28);
+  min-height: 100vh;
+  padding: 6.5rem 0 5rem;
+  position: relative;
+  z-index: 10;
+  background:
+    radial-gradient(circle at top, rgba(45, 158, 110, 0.08), transparent 24%),
+    linear-gradient(180deg, rgba(10, 51, 40, 0.2) 0%, rgba(5, 30, 27, 0.66) 42%, rgba(4, 15, 13, 0.85) 100%);
+}
+
+.blog-page-shell .page-wrap {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 2rem 2rem 6rem;
+}
+
+.blog-back-link {
+  display: inline-flex;
+  margin: 0 auto 1.5rem;
+  width: fit-content;
+  padding: 0.6rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(212, 168, 67, 0.2);
+  background: rgba(4, 15, 13, 0.55);
+  color: #e8d5a0;
+  text-decoration: none;
+  font-family: 'DM Mono', 'Courier New', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+.blog-back-link:hover {
+  color: #f0f7ee;
+  border-color: rgba(212, 168, 67, 0.38);
+}
+
+.blog-page-footer {
+  display: flex;
+  justify-content: center;
+  padding: 0 2rem 2rem;
+}
+
+.blog-footer-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.72rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(212, 168, 67, 0.2);
+  background: rgba(4, 15, 13, 0.55);
+  color: #e8d5a0;
+  text-decoration: none;
+  font-family: 'DM Mono', 'Courier New', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.blog-footer-link:hover {
+  color: #f0f7ee;
+  border-color: rgba(212, 168, 67, 0.38);
+}
+
+.blog-page-shell .author-strip,
+.blog-page-shell .mode-card,
+.blog-page-shell .code-wrap,
+.blog-page-shell .problem-card,
+.blog-page-shell .servo-card,
+.blog-page-shell .loop-wrap {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.blog-page-shell .hero-title {
+  font-size: clamp(2.6rem, 5vw, 4rem);
+  line-height: 1.14;
+  color: var(--text);
+}
+
+.blog-page-shell .lede {
+  font-size: clamp(1.22rem, 2vw, 1.5rem);
+  line-height: 1.9;
+  color: var(--text-sec);
+}
+
+.blog-page-shell .section-heading {
+  font-size: clamp(1.7rem, 2.5vw, 2.2rem);
+  margin-top: 3.4rem;
+  margin-bottom: 1rem;
+  color: var(--text);
+}
+
+.blog-page-shell .body-text,
+.blog-page-shell .problem-body,
+.blog-page-shell .mode-desc,
+.blog-page-shell .callout p,
+.blog-page-shell .wiring-table td,
+.blog-page-shell .servo-traits {
+  font-size: 1.04rem;
+  line-height: 1.95;
+  color: var(--text-sec);
+}
+
+.blog-page-shell .wiring-table th,
+.blog-page-shell .problem-title,
+.blog-page-shell .code-lang,
+.blog-page-shell .code-file,
+.blog-page-shell .servo-verdict,
+.blog-page-shell .post-tag,
+.blog-page-shell .tag,
+.blog-page-shell .author-role,
+.blog-page-shell .author-link {
+  color: var(--text-ter);
+}
+
+.blog-page-shell .author-name,
+.blog-page-shell .mode-title,
+.blog-page-shell .servo-name,
+.blog-page-shell .hero-title,
+.blog-page-shell .section-heading,
+.blog-page-shell .code-body pre,
+.blog-page-shell .wiring-table td {
+  color: var(--text);
+}
+
+.blog-page-shell .pull-quote {
+  color: #d7e7e1;
+  font-size: clamp(1.4rem, 2.3vw, 1.8rem);
+}
+
+.blog-page-shell .tag-list {
+  gap: 0.7rem;
+}
+
+.blog-page-shell .tag {
+  font-size: 0.8rem;
+  padding: 0.42rem 0.8rem;
+}
+
+.blog-page-shell #progress-bar {
+  background: linear-gradient(90deg, #d4a843, #2d9e6e);
+}
+
+@media (prefers-color-scheme: dark) {
+  .blog-page-shell {
+    --bg: rgba(6, 23, 20, 0.94);
+    --bg-secondary: rgba(8, 32, 29, 0.96);
+    --bg-info: rgba(16, 59, 51, 0.72);
+    --text: #f4fbf7;
+    --text-sec: #d3e3dd;
+    --text-ter: #9db8b0;
+    --text-info: #a7e6cc;
+    --text-warn: #f0d999;
+    --text-danger: #f5b5b3;
+    --text-success: #a7e7c2;
+    --border: rgba(178, 212, 198, 0.18);
+    --border-sec: rgba(212, 232, 224, 0.24);
+  }
+}
+
+@media (max-width: 900px) {
+  .blog-page-shell .page-wrap {
+    max-width: 860px;
+    padding: 1.75rem 1.4rem 5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .blog-page-shell {
+    padding-top: 5.8rem;
+  }
+
+  .blog-page-shell .page-wrap {
+    padding: 1.4rem 1rem 4rem;
+  }
+
+  .blog-page-shell .hero-title {
+    font-size: 2rem;
+  }
+
+  .blog-page-shell .body-text,
+  .blog-page-shell .problem-body,
+  .blog-page-shell .mode-desc,
+  .blog-page-shell .callout p,
+  .blog-page-shell .wiring-table td,
+  .blog-page-shell .servo-traits {
+    font-size: 0.98rem;
+    line-height: 1.82;
+  }
+
+  .blog-page-shell .tag {
+    font-size: 0.72rem;
+  }
+}

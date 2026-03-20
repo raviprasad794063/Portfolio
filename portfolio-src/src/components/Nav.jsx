@@ -12,6 +12,7 @@ const DEPTH_LABELS = [
 const NAV_ITEMS = [
   ['About', '#about'],
   ['Projects', '#projects'],
+  ['Blogs', '#blogs'],
   ['Certificates', '#certificates'],
   ['Systems', '#systems'],
   ['Contact', '#contact'],
