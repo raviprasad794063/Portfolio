@@ -226,5 +226,43 @@
 }
 
 @media (max-width: 768px) {
+  .projects {
+    padding: 7rem 5vw 5rem;
+  }
+
+  .section-eyebrow {
+    flex-wrap: wrap;
+    row-gap: 0.45rem;
+  }
+
+  .section-sub {
+    margin-bottom: 2.6rem;
+  }
+
   .projects-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 560px) {
+  .project-viz {
+    height: 160px;
+  }
+
+  .project-body {
+    padding: 1.3rem 1rem 1.35rem;
+  }
+
+  .project-title {
+    font-size: 1.3rem;
+  }
+
+  .project-desc,
+  .project-highlight {
+    font-size: 0.84rem;
+    line-height: 1.7;
+  }
+
+  .project-link {
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+  }
 }

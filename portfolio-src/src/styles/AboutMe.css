@@ -403,6 +403,14 @@
 }
 
 @media (max-width: 900px) {
+  .aboutme {
+    padding: 7rem 5vw 5rem;
+  }
+
+  .eyebrow-row {
+    margin-bottom: 2.5rem;
+  }
+
   .aboutme-top {
     grid-template-columns: 1fr;
     gap: 3rem;
@@ -418,11 +426,57 @@
 }
 
 @media (max-width: 560px) {
+  .eyebrow-row,
+  .photo-location,
+  .about-status {
+    flex-wrap: wrap;
+  }
+
+  .photo-frame {
+    width: 210px;
+    height: 210px;
+  }
+
+  .photo-ring-1 {
+    width: 228px;
+    height: 228px;
+  }
+
+  .photo-ring-2 {
+    width: 252px;
+    height: 252px;
+  }
+
+  .photo-ring-3 {
+    width: 276px;
+    height: 276px;
+  }
+
+  .aboutme-heading {
+    margin-bottom: 1.2rem;
+  }
+
+  .aboutme-para {
+    font-size: 0.94rem;
+    line-height: 1.75;
+  }
+
   .trait-grid {
     grid-template-columns: 1fr;
   }
 
+  .trait-pill,
+  .about-status,
   .skill-panel {
     padding: 1rem;
+  }
+
+  .status-text {
+    letter-spacing: 0.08em;
+    line-height: 1.6;
+  }
+
+  .skill-chip {
+    font-size: 0.82rem;
   }
 }

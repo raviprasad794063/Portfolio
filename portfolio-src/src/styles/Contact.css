@@ -260,6 +260,14 @@
     padding: 6rem 5vw 4rem;
   }
 
+  .contact-heading {
+    font-size: clamp(2.2rem, 10vw, 3rem);
+  }
+
+  .contact-sub {
+    margin-bottom: 2.2rem;
+  }
+
   .contact-form {
     padding: 1.15rem;
     border-radius: 20px;
@@ -275,8 +283,22 @@
     gap: 0.5rem;
   }
 
+  .contact-link-value {
+    font-size: 1rem;
+    word-break: break-word;
+  }
+
   .contact-link-arrow {
     margin-left: 0;
+  }
+
+  .contact-form-actions {
+    align-items: stretch;
+  }
+
+  .contact-submit,
+  .contact-status {
+    width: 100%;
   }
 
   .footer {

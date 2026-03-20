@@ -71,9 +71,22 @@
 }
 
 @media (max-width: 768px) {
+  .deep {
+    padding: 7rem 5vw 5rem;
+  }
+
   .deep-grid { grid-template-columns: 1fr 1fr; }
 }
 
 @media (max-width: 480px) {
   .deep-grid { grid-template-columns: 1fr; }
+
+  .deep-cell {
+    padding: 1.35rem 1rem;
+  }
+
+  .deep-desc {
+    font-size: 0.8rem;
+    line-height: 1.65;
+  }
 }

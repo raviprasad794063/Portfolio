@@ -51,6 +51,12 @@ body {
   cursor: none;
 }
 
+img,
+canvas,
+iframe {
+  max-width: 100%;
+}
+
 ::selection {
   background: rgba(45, 158, 110, 0.35);
   color: var(--caustic-pale);
@@ -123,4 +129,10 @@ body {
   0%   { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(45,158,110,0.4); }
   70%  { transform: scale(1);    box-shadow: 0 0 0 12px rgba(45,158,110,0); }
   100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(45,158,110,0); }
+}
+
+@media (pointer: coarse) {
+  body {
+    cursor: auto;
+  }
 }

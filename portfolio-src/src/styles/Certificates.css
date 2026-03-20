@@ -331,6 +331,10 @@
 }
 
 @media (max-width: 900px) {
+  .certs {
+    padding: 7rem 5vw 5rem;
+  }
+
   .certs-track {
     animation-duration: 48s;
   }
@@ -342,16 +346,34 @@
 
 @media (max-width: 560px) {
   .certs-carousel {
+    left: 0;
+    width: auto;
+    margin-left: 0;
+    overflow-x: auto;
+    padding-bottom: 0.4rem;
     mask-image: none;
     -webkit-mask-image: none;
+    scroll-snap-type: x proximity;
   }
 
   .certs-track {
-    animation-duration: 54s;
+    animation: none;
     gap: 1rem;
+    padding-right: 5vw;
   }
 
   .cert-card {
     flex-basis: 280px;
+    scroll-snap-align: start;
+  }
+
+  .cert-footer {
+    align-items: flex-start;
+    gap: 0.9rem;
+  }
+
+  .cert-verify-link,
+  .cert-verify-pending {
+    line-height: 1.6;
   }
 }

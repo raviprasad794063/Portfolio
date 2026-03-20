@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import '../styles/Certificates.css';
 
 const CERTS = [
@@ -183,7 +184,19 @@ function CertCard({ cert, index, duplicate = false }) {
 }
 
 export default function Certificates() {
-  const rotatingCerts = [...CERTS, ...CERTS];
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia('(max-width: 560px)');
+    const sync = () => setIsMobile(media.matches);
+
+    sync();
+    media.addEventListener('change', sync);
+
+    return () => media.removeEventListener('change', sync);
+  }, []);
+
+  const rotatingCerts = isMobile ? CERTS : [...CERTS, ...CERTS];
 
   return (
     <section id="certificates" className="certs">

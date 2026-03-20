@@ -304,6 +304,55 @@
   .hero-right { display: none; }
 }
 
+@media (max-width: 640px) {
+  .hero {
+    min-height: auto;
+    padding: 0 5vw 4rem;
+  }
+
+  .hero-inner {
+    padding-top: 7rem;
+    gap: 2rem;
+  }
+
+  .hero-eyebrow {
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    letter-spacing: 0.22em;
+  }
+
+  .hero-role {
+    font-size: 0.7rem;
+    letter-spacing: 0.11em;
+    line-height: 1.8;
+  }
+
+  .hero-statement {
+    max-width: none;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    padding-left: 0.9rem;
+    margin-bottom: 2rem;
+  }
+
+  .hero-ctas {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.9rem;
+  }
+
+  .btn-primary,
+  .btn-ghost {
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+  }
+
+  .hero-scroll {
+    display: none;
+  }
+}
+
 /* ── Resume Modal ── */
 .resume-overlay {
   position: fixed;
@@ -410,4 +459,32 @@
   height: 100%;
   border: none;
   display: block;
+}
+
+@media (max-width: 640px) {
+  .resume-overlay {
+    padding: 0.75rem;
+  }
+
+  .resume-modal {
+    height: 88vh;
+    border-radius: 18px;
+  }
+
+  .resume-modal-header {
+    padding: 0.85rem 0.9rem;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .resume-modal-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .resume-modal-title {
+    letter-spacing: 0.12em;
+    line-height: 1.5;
+  }
 }
