@@ -1,9 +1,20 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import '../styles/Hero.css';
 
 function ResumeModal({ onClose }) {
   const resumeUrl = '/resume.pdf';
+
+  useEffect(() => {
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [onClose]);
 
   return createPortal(
     <div className="resume-overlay" onClick={onClose}>
@@ -25,6 +36,14 @@ function ResumeModal({ onClose }) {
         </div>
         <div className="resume-modal-body">
           <iframe src={resumeUrl} title="Ravi Ranjan Prasad Resume" className="resume-iframe" />
+          <p className="resume-modal-fallback">
+            If the preview does not load, use the
+            {' '}
+            <a href={resumeUrl} target="_blank" rel="noreferrer">
+              direct resume link
+            </a>
+            .
+          </p>
         </div>
       </div>
     </div>,
@@ -34,6 +53,20 @@ function ResumeModal({ onClose }) {
 
 export default function Hero() {
   const [showResume, setShowResume] = useState(false);
+  const resumeUrl = '/resume.pdf';
+
+  const handleResumeClick = () => {
+    const shouldOpenDirectly =
+      window.matchMedia('(max-width: 768px)').matches ||
+      window.matchMedia('(pointer: coarse)').matches;
+
+    if (shouldOpenDirectly) {
+      window.open(resumeUrl, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
+    setShowResume(true);
+  };
 
   return (
     <section id="hero" className="hero">
@@ -60,7 +93,7 @@ export default function Hero() {
           </p>
 
           <div className="hero-ctas">
-            <button className="btn-primary" onClick={() => setShowResume(true)}>
+            <button type="button" className="btn-primary" onClick={handleResumeClick}>
               <span>View Resume</span>
               <span className="btn-arrow">-&gt;</span>
             </button>

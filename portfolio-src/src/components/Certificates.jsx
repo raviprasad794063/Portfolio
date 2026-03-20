@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import '../styles/Certificates.css';
 
 const CERTS = [
@@ -185,6 +185,7 @@ function CertCard({ cert, index, duplicate = false }) {
 
 export default function Certificates() {
   const [isMobile, setIsMobile] = useState(false);
+  const carouselRef = useRef(null);
 
   useEffect(() => {
     const media = window.matchMedia('(max-width: 560px)');
@@ -195,6 +196,54 @@ export default function Certificates() {
 
     return () => media.removeEventListener('change', sync);
   }, []);
+
+  useEffect(() => {
+    if (!isMobile || !carouselRef.current) {
+      return undefined;
+    }
+
+    const carousel = carouselRef.current;
+    let animationFrameId = 0;
+    let lastTimestamp = 0;
+    let pausedUntil = 0;
+    const speed = 0.28;
+
+    const pauseAutoscroll = () => {
+      pausedUntil = performance.now() + 2200;
+    };
+
+    const step = (timestamp) => {
+      if (!lastTimestamp) {
+        lastTimestamp = timestamp;
+      }
+
+      const delta = timestamp - lastTimestamp;
+      lastTimestamp = timestamp;
+
+      if (timestamp >= pausedUntil) {
+        const maxScrollLeft = carousel.scrollWidth - carousel.clientWidth;
+
+        if (maxScrollLeft > 0) {
+          const nextScrollLeft = carousel.scrollLeft + delta * speed;
+          carousel.scrollLeft = nextScrollLeft >= maxScrollLeft ? 0 : nextScrollLeft;
+        }
+      }
+
+      animationFrameId = window.requestAnimationFrame(step);
+    };
+
+    animationFrameId = window.requestAnimationFrame(step);
+    carousel.addEventListener('touchstart', pauseAutoscroll, { passive: true });
+    carousel.addEventListener('pointerdown', pauseAutoscroll, { passive: true });
+    carousel.addEventListener('scroll', pauseAutoscroll, { passive: true });
+
+    return () => {
+      window.cancelAnimationFrame(animationFrameId);
+      carousel.removeEventListener('touchstart', pauseAutoscroll);
+      carousel.removeEventListener('pointerdown', pauseAutoscroll);
+      carousel.removeEventListener('scroll', pauseAutoscroll);
+    };
+  }, [isMobile]);
 
   const rotatingCerts = isMobile ? CERTS : [...CERTS, ...CERTS];
 
@@ -213,7 +262,7 @@ export default function Certificates() {
           Real credentials and competition work, now linked to their actual files.
         </p>
 
-        <div className="certs-carousel reveal">
+        <div ref={carouselRef} className="certs-carousel reveal">
           <div className="certs-track">
             {rotatingCerts.map((cert, index) => (
               <CertCard

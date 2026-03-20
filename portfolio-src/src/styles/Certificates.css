@@ -345,21 +345,36 @@
 }
 
 @media (max-width: 560px) {
+  .certs {
+    padding: 6rem 5vw 4.5rem;
+  }
+
+  .certs-sub {
+    margin-bottom: 2.2rem;
+  }
+
   .certs-carousel {
     left: 0;
     width: auto;
     margin-left: 0;
     overflow-x: auto;
+    overflow-y: visible;
     padding-bottom: 0.4rem;
     mask-image: none;
     -webkit-mask-image: none;
     scroll-snap-type: x proximity;
+    scroll-padding-left: 0.1rem;
+    scrollbar-width: none;
+  }
+
+  .certs-carousel::-webkit-scrollbar {
+    display: none;
   }
 
   .certs-track {
     animation: none;
     gap: 1rem;
-    padding-right: 5vw;
+    padding: 0 5vw 0 0.1rem;
   }
 
   .cert-card {
@@ -370,6 +385,10 @@
   .cert-footer {
     align-items: flex-start;
     gap: 0.9rem;
+  }
+
+  .cert-title {
+    font-size: 1rem;
   }
 
   .cert-verify-link,
