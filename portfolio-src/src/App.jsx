@@ -12,6 +12,7 @@ import Contact from './components/Contact';
 import SentryGunBlog from './pages/SentryGunBlog';
 
 const BLOG_PATHS = new Set([
+  '/blog/yolov8-arduino-pan-tilt-tracking',
   '/blog/yolov8-arduino-ai-sentry-gun',
   '/blog/yolov8-arduino-ai-sentry-gun-computer-vision',
 ]);

@@ -2,17 +2,17 @@ import '../styles/Blogs.css';
 
 const BLOGS = [
   {
-    title: 'Building an AI Sentry Gun: YOLOv8 Tracking System with Arduino',
+    title: 'Building a Real-Time AI Pan-Tilt Tracking System: YOLOv8 + Arduino',
     category: 'Embedded CV',
     date: 'Featured Post',
     readTime: '12 min read',
-    href: '/blog/yolov8-arduino-ai-sentry-gun',
+    href: '/blog/yolov8-arduino-pan-tilt-tracking',
     summary:
-      'A full project walkthrough of the automated sentry build: YOLOv8 detection, OpenCV face recognition, Arduino servo control, hardware tradeoffs, and the real-world problems that show up when ML leaves the screen.',
+      'A full project walkthrough of the real-time pan-tilt tracking build: YOLOv8 detection, OpenCV face recognition, Arduino servo control, hardware tradeoffs, and the real-world problems that show up when computer vision leaves the screen.',
     highlights: [
       'YOLOv8 tracking + Arduino pan-tilt integration',
-      'Face recognition, laser engagement, and control-loop lessons',
-      'SEO-ready long-form writeup published as a standalone article',
+      'Face recognition, laser pointer activation, and control-loop lessons',
+      'Standalone long-form writeup with updated pan-tilt framing',
     ],
     tags: ['YOLOv8', 'Arduino', 'Computer Vision', 'OpenCV'],
   },
