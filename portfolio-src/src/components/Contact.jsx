@@ -5,7 +5,7 @@ const LINKS = [
   { label: 'Email', value: 'rrk794063@gmail.com', href: 'mailto:rrk794063@gmail.com' },
   // { label: 'Phone', value: '+91 9142162772', href: 'tel:+919142162772' },
   { label: 'GitHub', value: 'github.com/raviprasad794063', href: 'https://github.com/raviprasad794063' },
-  { label: 'LinkedIn', value: 'linkedin.com/in/ravi-prasad-3b1271281', href: 'https://www.linkedin.com/in/ravi-prasad-3b1271281' },
+  { label: 'LinkedIn', value: 'linkedin.com/in/raviranjan-prasad', href: 'https://www.linkedin.com/in/raviranjan-prasad' },
   { label: 'Location', value: 'Roorkee, Uttarakhand', href: null },
 ];
 
@@ -159,7 +159,7 @@ export default function Contact() {
       <footer className="footer">
         <span className="footer-copy">(c) 2026 Ravi Ranjan Prasad</span>
         <a
-          href="https://www.linkedin.com/in/ravi-prasad-3b1271281"
+          href="https://www.linkedin.com/in/raviranjan-prasad"
           target="_blank"
           rel="noopener noreferrer"
           className="footer-copy"
