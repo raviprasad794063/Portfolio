@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO Meta -->
+  <title>Building DisasterMesh: A Decentralized Offline Communication System for Disaster Scenarios | Ravi Ranjan Prasad</title>
+  <meta name="description" content="Full build walkthrough of DisasterMesh — an Android peer-to-peer mesh networking app that enables emergency communication without internet or cellular infrastructure using Bluetooth and Wi-Fi Direct." />
+  <meta name="keywords" content="DisasterMesh, offline mesh networking, Android peer-to-peer, disaster communication, Google Nearby Connections API, mesh network Android, decentralized communication, emergency messaging app" />
+  <meta name="author" content="Ravi Ranjan Prasad" />
+  <link rel="canonical" href="https://raviranjanprasad.vercel.app/blog/disastermesh-offline-mesh-networking" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Building DisasterMesh: A Decentralized Offline Communication System for Disaster Scenarios" />
+  <meta property="og:description" content="How I built an Android mesh network that lets devices communicate without internet, cellular towers, or central servers — and what networking in the real world actually looks like." />
+  <meta property="og:url" content="https://raviranjanprasad.vercel.app/blog/disastermesh-offline-mesh-networking" />
+  <meta property="article:author" content="Ravi Ranjan Prasad" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Building DisasterMesh: Offline P2P Mesh Networking for Disaster Scenarios" />
+  <meta name="twitter:description" content="Bluetooth + Wi-Fi Direct + multi-hop relay + OpenStreetMap. How I built an Android app that works when everything else goes down." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #ffffff;
+      --bg-secondary: #f6f5f0;
+      --bg-info:      #e8f1fb;
+      --bg-warn:      #fdf3e0;
+      --bg-danger:    #fdeaea;
+      --bg-success:   #eaf5ee;
+      --text:         #1a1a18;
+      --text-sec:     #5a5a56;
+      --text-ter:     #9a9890;
+      --text-info:    #1060a8;
+      --text-warn:    #8a5000;
+      --text-danger:  #9a2020;
+      --text-success: #1a6a30;
+      --border:       rgba(26,26,24,0.12);
+      --border-sec:   rgba(26,26,24,0.22);
+      --border-info:  rgba(16,96,168,0.30);
+      --border-warn:  rgba(138,80,0,0.30);
+      --border-danger:rgba(154,32,32,0.30);
+      --border-success:rgba(26,106,48,0.30);
+      --radius-md:    8px;
+      --radius-lg:    12px;
+      --font-sans:    'DM Sans', sans-serif;
+      --font-serif:   'Playfair Display', serif;
+      --font-mono:    'JetBrains Mono', monospace;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:           #1a1a18;
+        --bg-secondary: #242420;
+        --bg-info:      #0c2240;
+        --bg-warn:      #2a1e00;
+        --bg-danger:    #2a0c0c;
+        --bg-success:   #0c2416;
+        --text:         #e8e6dc;
+        --text-sec:     #9a9890;
+        --text-ter:     #6a6864;
+        --text-info:    #6aadec;
+        --text-warn:    #f0b84a;
+        --text-danger:  #f08080;
+        --text-success: #6acf8a;
+        --border:       rgba(232,230,220,0.10);
+        --border-sec:   rgba(232,230,220,0.20);
+        --border-info:  rgba(106,173,236,0.25);
+        --border-warn:  rgba(240,184,74,0.25);
+        --border-danger:rgba(240,128,128,0.25);
+        --border-success:rgba(106,207,138,0.25);
+      }
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-sans);
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    .page-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 6rem;
+    }
+
+    #progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      width: 0%;
+      background: #378ADD;
+      z-index: 100;
+      transition: width 0.1s linear;
+    }
+
+    /* ── Author strip ── */
+    .author-strip {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 1rem 1.25rem;
+      background: var(--bg-secondary);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      margin-bottom: 2rem;
+    }
+
+    .author-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--bg-info);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-info);
+      flex-shrink: 0;
+    }
+
+    .author-meta { flex: 1; }
+
+    .author-name {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+
+    .author-role {
+      font-size: 12.5px;
+      color: var(--text-sec);
+      line-height: 1.4;
+    }
+
+    .author-link {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      background: var(--bg);
+      border: 0.5px solid var(--border-sec);
+      color: var(--text-sec);
+      text-decoration: none;
+      white-space: nowrap;
+      transition: color 0.15s;
+    }
+
+    .author-link:hover { color: var(--text); }
+
+    /* ── Post tag ── */
+    .post-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-info);
+      background: var(--bg-info);
+      border: 0.5px solid var(--border-info);
+      border-radius: 4px;
+      padding: 4px 10px;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── Hero ── */
+    .hero-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      line-height: 1.18;
+      color: var(--text);
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--text-sec);
+    }
+
+    .lede {
+      font-family: var(--font-serif);
+      font-size: 1.2rem;
+      font-weight: 400;
+      line-height: 1.75;
+      color: var(--text-sec);
+      margin-bottom: 2.5rem;
+      padding-bottom: 2.5rem;
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .body-text {
+      font-size: 16px;
+      line-height: 1.85;
+      color: var(--text);
+      margin-bottom: 1.25rem;
+    }
+
+    .section-heading {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      font-weight: 700;
+      line-height: 1.25;
+      color: var(--text);
+      margin-top: 3rem;
+      margin-bottom: 0.85rem;
+    }
+
+    /* ── Feature cards ── */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 1.5rem 0;
+    }
+
+    .feature-card {
+      background: var(--bg);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.1rem 1.1rem 1rem;
+    }
+
+    .feature-badge {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      background: var(--bg-secondary);
+      color: var(--text-ter);
+      border: 0.5px solid var(--border);
+    }
+
+    .feature-title {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 5px;
+    }
+
+    .feature-desc {
+      font-size: 12.5px;
+      color: var(--text-sec);
+      line-height: 1.55;
+    }
+
+    /* ── Loop / flow diagram ── */
+    .loop-wrap {
+      margin: 1.75rem 0;
+      background: var(--bg-secondary);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem 1rem 1.25rem;
+      overflow-x: auto;
+    }
+
+    .loop-svg { display: block; width: 100%; }
+
+    /* ── Code blocks ── */
+    .code-wrap {
+      background: var(--bg-secondary);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-md);
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 14px;
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .code-lang {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--text-ter);
+    }
+
+    .code-file {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--text-ter);
+    }
+
+    .code-body {
+      padding: 1.1rem 1.25rem;
+      overflow-x: auto;
+    }
+
+    .code-body pre {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.85;
+      color: var(--text);
+      white-space: pre;
+      margin: 0;
+    }
+
+    .cm { color: var(--text-ter); }
+    .ck { color: var(--text-info); }
+    .cs { color: var(--text-success); }
+    .cn { color: var(--text-warn); }
+
+    /* ── Callouts ── */
+    .callout {
+      border-left: 2px solid var(--border-info);
+      background: var(--bg-info);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+
+    .callout p {
+      font-size: 14.5px;
+      line-height: 1.7;
+      color: var(--text-info);
+      margin: 0;
+    }
+
+    .callout.warn {
+      border-left-color: var(--border-warn);
+      background: var(--bg-warn);
+    }
+    .callout.warn p { color: var(--text-warn); }
+
+    .callout.danger {
+      border-left-color: var(--border-danger);
+      background: var(--bg-danger);
+    }
+    .callout.danger p { color: var(--text-danger); }
+
+    .callout.success {
+      border-left-color: var(--border-success);
+      background: var(--bg-success);
+    }
+    .callout.success p { color: var(--text-success); }
+
+    /* ── Comparison grid ── */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 1.5rem 0;
+    }
+
+    .compare-card {
+      background: var(--bg);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.25rem;
+    }
+
+    .compare-card.bad  { border-top: 2px solid #E24B4A; }
+    .compare-card.good { border-top: 2px solid #1D9E75; }
+
+    .compare-verdict {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      font-weight: 500;
+      margin-bottom: 5px;
+    }
+
+    .compare-card.bad  .compare-verdict { color: #E24B4A; }
+    .compare-card.good .compare-verdict { color: #1D9E75; }
+
+    .compare-name {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .compare-traits {
+      list-style: none;
+      font-size: 13px;
+      color: var(--text-sec);
+      line-height: 2;
+    }
+
+    .trait-dot {
+      display: inline-block;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    .bad-dot  { background: #E24B4A; }
+    .good-dot { background: #1D9E75; }
+
+    /* ── Problem grid ── */
+    .problem-grid { display: grid; gap: 10px; margin: 1.5rem 0; }
+
+    .problem-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .problem-card {
+      background: var(--bg-secondary);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+    }
+
+    .problem-title {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-sec);
+      margin-bottom: 6px;
+    }
+
+    .problem-body {
+      font-size: 13.5px;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* ── Stack table ── */
+    .stack-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.25rem 0;
+      font-size: 13.5px;
+    }
+
+    .stack-table th {
+      text-align: left;
+      font-weight: 500;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-sec);
+      padding: 0 12px 10px 0;
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .stack-table td {
+      padding: 10px 12px 10px 0;
+      border-bottom: 0.5px solid var(--border);
+      color: var(--text);
+      vertical-align: middle;
+    }
+
+    .stack-table tr:last-child td { border-bottom: none; }
+
+    .stack-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      background: var(--bg-secondary);
+      border: 0.5px solid var(--border-sec);
+      border-radius: 4px;
+      padding: 2px 8px;
+      color: var(--text-sec);
+    }
+
+    /* ── Pull quote ── */
+    .pull-quote {
+      font-family: var(--font-serif);
+      font-size: 1.35rem;
+      font-style: italic;
+      line-height: 1.55;
+      color: var(--text-sec);
+      border-top: 0.5px solid var(--border);
+      border-bottom: 0.5px solid var(--border);
+      padding: 1.75rem 0;
+      margin: 3rem 0;
+      text-align: center;
+    }
+
+    /* ── Tags ── */
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 0.5px solid var(--border);
+    }
+
+    .tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 3px 9px;
+      border-radius: 4px;
+      background: var(--bg-secondary);
+      border: 0.5px solid var(--border);
+      color: var(--text-sec);
+    }
+
+    @media (max-width: 560px) {
+      .feature-grid, .compare-grid, .problem-row { grid-template-columns: 1fr; }
+      .author-link { display: none; }
+      .hero-title  { font-size: 1.85rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="progress-bar"></div>
+
+  <main class="page-wrap">
+
+    <!-- ── Author strip ── -->
+    <div class="author-strip">
+      <div class="author-avatar">RR</div>
+      <div class="author-meta">
+        <div class="author-name">Ravi Ranjan Prasad</div>
+        <div class="author-role">ML Engineer &nbsp;&middot;&nbsp; Real-time intelligent systems &nbsp;&middot;&nbsp; Android &nbsp;&middot;&nbsp; Distributed Systems &nbsp;&middot;&nbsp; Kotlin</div>
+      </div>
+      <a class="author-link" href="https://github.com/raviprasad794063/disaster_mesh" target="_blank" rel="noopener">View on GitHub &rarr;</a>
+    </div>
+
+    <!-- ── Post tag ── -->
+    <div class="post-tag">Project writeup &nbsp;&middot;&nbsp; Android &nbsp;&middot;&nbsp; Distributed Systems &nbsp;&middot;&nbsp; Emergency Tech</div>
+
+    <!-- ── Hero ── -->
+    <h1 class="hero-title">
+      I built an Android app that works when everything else goes down &mdash;
+      <em>here&rsquo;s what real-world mesh networking actually looks like</em>
+    </h1>
+
+    <p class="lede">
+      DisasterMesh is a decentralized Android communication system that lets nearby devices discover each other, exchange messages, and relay information across multiple hops &mdash; all without internet, cellular towers, or a central server. This is the full build walkthrough.
+    </p>
+
+    <!-- ── Intro ── -->
+    <p class="body-text">
+      Most communication systems are built on a single assumption: the internet will always be there. In real-world disaster scenarios &mdash; earthquakes, floods, large-scale outages &mdash; that assumption fails immediately. Cellular towers go down. Wi-Fi infrastructure disappears. The people who need to communicate most are the ones suddenly cut off.
+    </p>
+    <p class="body-text">
+      That is where this project started. The question was simple: what if devices could communicate without internet, without cellular towers, and still form a usable network? The answer turned into DisasterMesh &mdash; a peer-to-peer Android application that uses Bluetooth and Wi-Fi Direct to build a dynamic mesh where each device acts as both a node and a relay.
+    </p>
+
+    <!-- ── What it solves ── -->
+    <h2 class="section-heading">The real problem: propagating information across disconnected nodes</h2>
+
+    <p class="body-text">
+      This is not just a chat app without Wi-Fi. The genuinely hard problem is different. If device A is not directly connected to device C, but both connect to B &mdash; can A still send a message to C? That is the core challenge: discovery, routing, and reliability across a network that has no fixed topology and no central coordinator.
+    </p>
+
+    <div class="loop-wrap">
+      <svg class="loop-svg" viewBox="0 0 680 100" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+          <style>
+            .n-rect       { fill: var(--bg); stroke: var(--border-sec); stroke-width: 0.5; }
+            .n-rect-blue  { fill: var(--bg-info); stroke: var(--border-info); stroke-width: 0.5; }
+            .n-title      { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 500; fill: var(--text); }
+            .n-sub        { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill: var(--text-sec); }
+            .n-title-blue { fill: var(--text-info); }
+            .conn         { fill: none; stroke: var(--border-sec); stroke-width: 0.5; marker-end: url(#arr); }
+            .conn-blue    { fill: none; stroke: var(--border-info); stroke-width: 0.5; stroke-dasharray: 4 3; marker-end: url(#arr); }
+          </style>
+        </defs>
+
+        <rect class="n-rect" x="20" y="22" width="120" height="44" rx="8"/>
+        <text class="n-title" x="80" y="40" text-anchor="middle" dominant-baseline="central">Device A</text>
+        <text class="n-sub"   x="80" y="57" text-anchor="middle" dominant-baseline="central">Message origin</text>
+        <line class="conn" x1="140" y1="44" x2="178" y2="44"/>
+
+        <rect class="n-rect-blue" x="180" y="22" width="120" height="44" rx="8"/>
+        <text class="n-title n-title-blue" x="240" y="40" text-anchor="middle" dominant-baseline="central">Device B</text>
+        <text class="n-sub"                x="240" y="57" text-anchor="middle" dominant-baseline="central">Relay node</text>
+        <line class="conn" x1="300" y1="44" x2="338" y2="44"/>
+
+        <rect class="n-rect-blue" x="340" y="22" width="120" height="44" rx="8"/>
+        <text class="n-title n-title-blue" x="400" y="40" text-anchor="middle" dominant-baseline="central">Device C</text>
+        <text class="n-sub"                x="400" y="57" text-anchor="middle" dominant-baseline="central">Relay node</text>
+        <line class="conn" x1="460" y1="44" x2="498" y2="44"/>
+
+        <rect class="n-rect" x="500" y="22" width="120" height="44" rx="8"/>
+        <text class="n-title" x="560" y="40" text-anchor="middle" dominant-baseline="central">Device D</text>
+        <text class="n-sub"   x="560" y="57" text-anchor="middle" dominant-baseline="central">Destination</text>
+
+        <line class="conn-blue" x1="80" y1="66" x2="80" y2="88" stroke="#185FA5"/>
+        <line class="conn-blue" x1="80" y1="88" x2="560" y2="88" stroke="#185FA5"/>
+        <line class="conn-blue" x1="560" y1="88" x2="560" y2="66" stroke="#185FA5"/>
+        <text class="n-sub" x="320" y="98" text-anchor="middle" fill="#185FA5">A reaches D even without a direct connection</text>
+      </svg>
+    </div>
+
+    <!-- ── Architecture ── -->
+    <h2 class="section-heading">How the mesh actually works</h2>
+
+    <p class="body-text">
+      At a high level, DisasterMesh behaves like a dynamic mesh network. Every device acts as both a client and a relay. When a message is sent, it does not travel down a fixed route &mdash; it propagates outward through whatever connections are available at that moment.
+    </p>
+
+    <div class="loop-wrap">
+      <svg class="loop-svg" viewBox="0 0 680 340" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+          <style>
+            .n2-rect       { fill: var(--bg); stroke: var(--border-sec); stroke-width: 0.5; }
+            .n2-rect-blue  { fill: var(--bg-info); stroke: var(--border-info); stroke-width: 0.5; }
+            .n2-rect-green { fill: var(--bg-success); stroke: var(--border-success); stroke-width: 0.5; }
+            .n2-title      { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 500; fill: var(--text); }
+            .n2-sub        { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill: var(--text-sec); }
+            .n2-blue       { fill: var(--text-info); }
+            .n2-green      { fill: var(--text-success); }
+            .conn2         { fill: none; stroke: var(--border-sec); stroke-width: 0.5; marker-end: url(#arr2); }
+            .conn2-ret     { fill: none; stroke: var(--border-sec); stroke-width: 0.5; stroke-dasharray: 5 4; marker-end: url(#arr2); }
+            .layer-line2   { stroke-width: 0.5; stroke-dasharray: 3 3; }
+            .layer-lbl2    { font-family: 'JetBrains Mono', monospace; font-size: 10px; }
+          </style>
+        </defs>
+
+        <!-- Row 1 -->
+        <rect class="n2-rect" x="20" y="30" width="130" height="56" rx="8"/>
+        <text class="n2-title" x="85" y="53" text-anchor="middle" dominant-baseline="central">User sends</text>
+        <text class="n2-sub"   x="85" y="72" text-anchor="middle" dominant-baseline="central">Message composed</text>
+        <line class="conn2" x1="150" y1="58" x2="188" y2="58"/>
+
+        <rect class="n2-rect-blue" x="190" y="30" width="145" height="56" rx="8"/>
+        <text class="n2-title n2-blue" x="262" y="53" text-anchor="middle" dominant-baseline="central">Local broadcast</text>
+        <text class="n2-sub"          x="262" y="72" text-anchor="middle" dominant-baseline="central">Nearby Connections API</text>
+        <line class="conn2" x1="335" y1="58" x2="373" y2="58"/>
+
+        <rect class="n2-rect-blue" x="375" y="30" width="145" height="56" rx="8"/>
+        <text class="n2-title n2-blue" x="447" y="53" text-anchor="middle" dominant-baseline="central">Peers receive</text>
+        <text class="n2-sub"           x="447" y="72" text-anchor="middle" dominant-baseline="central">Bluetooth / Wi-Fi Direct</text>
+        <line class="conn2" x1="520" y1="58" x2="558" y2="58"/>
+
+        <rect class="n2-rect" x="560" y="30" width="100" height="56" rx="8"/>
+        <text class="n2-title" x="610" y="58" text-anchor="middle" dominant-baseline="central">TTL check</text>
+
+        <line class="conn2" x1="610" y1="86" x2="610" y2="174"/>
+
+        <!-- Row 2 -->
+        <rect class="n2-rect-green" x="460" y="176" width="150" height="56" rx="8"/>
+        <text class="n2-title n2-green" x="535" y="199" text-anchor="middle" dominant-baseline="central">Relay forward</text>
+        <text class="n2-sub"            x="535" y="218" text-anchor="middle" dominant-baseline="central">TTL decremented</text>
+        <line class="conn2" x1="460" y1="204" x2="398" y2="204"/>
+
+        <rect class="n2-rect-green" x="248" y="176" width="148" height="56" rx="8"/>
+        <text class="n2-title n2-green" x="322" y="199" text-anchor="middle" dominant-baseline="central">Dedup filter</text>
+        <text class="n2-sub"            x="322" y="218" text-anchor="middle" dominant-baseline="central">Check seen message IDs</text>
+        <line class="conn2" x1="248" y1="204" x2="186" y2="204"/>
+
+        <rect class="n2-rect" x="86" y="176" width="98" height="56" rx="8"/>
+        <text class="n2-title" x="135" y="204" text-anchor="middle" dominant-baseline="central">Destination</text>
+
+        <path class="conn2-ret" d="M135 232 L135 285 L340 285 L340 232"/>
+        <text class="n2-sub" x="340" y="308" text-anchor="middle" dominant-baseline="central">message propagates until TTL reaches zero</text>
+
+        <line class="layer-line2" x1="30"  y1="326" x2="520" y2="326" stroke="#1D9E75"/>
+        <line class="layer-line2" x1="560" y1="326" x2="650" y2="326" stroke="#185FA5"/>
+        <text class="layer-lbl2" x="30"  y="338" fill="#1D9E75">Propagation layer</text>
+        <text class="layer-lbl2" x="560" y="338" fill="#185FA5">Control layer</text>
+      </svg>
+    </div>
+
+    <!-- ── Device discovery ── -->
+    <h2 class="section-heading">Device discovery: easy in theory, hard in practice</h2>
+
+    <p class="body-text">
+      DisasterMesh uses the Google Nearby Connections API, which handles Bluetooth and Wi-Fi Direct transport without requiring internet. Devices advertise themselves, nearby devices discover them, a connection is established, and data exchange begins.
+    </p>
+    <p class="body-text">
+      The API handles the transport layer well. What it does not handle is the instability of real-world conditions. Devices move, disconnect, and reappear constantly. The system has to treat connection loss as a normal operating state, not an error condition.
+    </p>
+
+    <div class="callout">
+      <p>Discovery is the easy part. Maintaining stable connections in a mobile environment where devices are constantly moving is where the real engineering problem lives. The system has to continuously adapt its peer list rather than treating disconnection as a failure.</p>
+    </div>
+
+    <!-- ── Message propagation ── -->
+    <h2 class="section-heading">Message propagation: controlled relay, not flood</h2>
+
+    <p class="body-text">
+      The naive approach to mesh propagation &mdash; every device forwards every message it receives &mdash; fails immediately at scale. The network floods, duplicate messages explode, and bandwidth is consumed by traffic that serves no purpose.
+    </p>
+    <p class="body-text">
+      DisasterMesh uses a controlled relay approach. Every message carries three pieces of metadata: a unique ID, the sender ID, and a TTL (time-to-live) counter. Each device checks whether it has already seen a message before processing or forwarding it.
+    </p>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <span class="code-lang">Kotlin</span>
+        <span class="code-file">MeshRepository.kt &mdash; deduplication and TTL relay logic</span>
+      </div>
+      <div class="code-body"><pre><span class="ck">fun</span> onMessageReceived(message: MeshMessage) {
+
+    <span class="cm">// Ignore messages already seen — prevents network flooding</span>
+    <span class="ck">if</span> (seenMessageIds.contains(message.id)) <span class="ck">return</span>
+
+    seenMessageIds.add(message.id)
+    processLocally(message)
+
+    <span class="cm">// Only relay if the message still has hops remaining</span>
+    <span class="ck">if</span> (message.ttl > <span class="cn">0</span>) {
+        <span class="ck">val</span> relayed = message.copy(ttl = message.ttl - <span class="cn">1</span>)
+        forwardToAllPeers(relayed)
+    }
+}</pre></div>
+    </div>
+
+    <div class="callout warn">
+      <p>Without deduplication, a single message sent on a 10-device network can generate hundreds of duplicate forwards within seconds. The seen-message ID set is the single most important piece of the propagation logic.</p>
+    </div>
+
+    <!-- ── Multi-hop ── -->
+    <h2 class="section-heading">Multi-hop communication: where the system becomes useful</h2>
+
+    <p class="body-text">
+      The TTL-controlled relay is what makes multi-hop communication possible. A message from device A does not need a direct connection to device D &mdash; it just needs a continuous chain of relay nodes between them. Each relay decrements the TTL by one and forwards. When TTL reaches zero, propagation stops.
+    </p>
+    <p class="body-text">
+      This reframes what connectivity means. In a traditional network, connectivity is binary &mdash; you either have a path or you do not. In a mesh, connectivity is about reachable paths. A device that cannot see you directly can still receive your message through two or three hops of relay.
+    </p>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <span class="code-lang">Kotlin</span>
+        <span class="code-file">MeshMessage.kt &mdash; message structure</span>
+      </div>
+      <div class="code-body"><pre><span class="ck">data class</span> MeshMessage(
+    <span class="ck">val</span> id:        String,   <span class="cm">// unique UUID per message</span>
+    <span class="ck">val</span> senderId:  String,   <span class="cm">// originating device</span>
+    <span class="ck">val</span> content:   String,   <span class="cm">// message payload</span>
+    <span class="ck">val</span> ttl:       Int,      <span class="cm">// hops remaining before propagation stops</span>
+    <span class="ck">val</span> latitude:  Double?,  <span class="cm">// optional location data</span>
+    <span class="ck">val</span> longitude: Double?,
+    <span class="ck">val</span> timestamp: Long
+)</pre></div>
+    </div>
+
+    <!-- ── Location ── -->
+    <h2 class="section-heading">Location awareness and SOS alerts</h2>
+
+    <p class="body-text">
+      DisasterMesh integrates OpenStreetMap for fully offline map rendering. Devices embed their GPS coordinates in outgoing messages, and the map UI plots received alerts in real time. A user can send an SOS with their location attached &mdash; that message propagates through the mesh and nearby devices display it on the map.
+    </p>
+    <p class="body-text">
+      There are two alert modes: a user SOS that broadcasts a distress signal with location, and an admin broadcast that can set a risk level and radius. The admin mode is designed for first responders or coordinated emergency management.
+    </p>
+
+    <div class="callout success">
+      <p>Because OpenStreetMap tiles can be cached locally on the device, the map continues working even when there is no internet connection. The entire location-awareness layer &mdash; map rendering, alert plotting, GPS coordinates &mdash; is fully offline.</p>
+    </div>
+
+    <!-- ── Tech stack ── -->
+    <h2 class="section-heading">Tech stack</h2>
+
+    <table class="stack-table">
+      <thead>
+        <tr>
+          <th>Layer</th>
+          <th>Technology</th>
+          <th>Why</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Language</td>
+          <td><span class="stack-badge">Kotlin</span></td>
+          <td>Android-native, coroutine support for async mesh ops</td>
+        </tr>
+        <tr>
+          <td>P2P transport</td>
+          <td><span class="stack-badge">Google Nearby Connections API</span></td>
+          <td>Handles Bluetooth + Wi-Fi Direct without internet</td>
+        </tr>
+        <tr>
+          <td>Maps</td>
+          <td><span class="stack-badge">OpenStreetMap</span></td>
+          <td>Fully offline, no API key, cacheable tiles</td>
+        </tr>
+        <tr>
+          <td>Architecture</td>
+          <td><span class="stack-badge">MVVM</span></td>
+          <td>Clean state management for async mesh updates</td>
+        </tr>
+        <tr>
+          <td>Background ops</td>
+          <td><span class="stack-badge">Android Services</span></td>
+          <td>Keeps mesh connections alive when app is minimised</td>
+        </tr>
+        <tr>
+          <td>UI</td>
+          <td><span class="stack-badge">Material Design</span></td>
+          <td>Readable under stress, optimised for Android</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- ── Architecture decisions ── -->
+    <h2 class="section-heading">Two architectural decisions that mattered most</h2>
+
+    <div class="compare-grid">
+      <div class="compare-card bad">
+        <div class="compare-verdict">Without this</div>
+        <div class="compare-name">No background service</div>
+        <ul class="compare-traits">
+          <li><span class="trait-dot bad-dot"></span>App breaks when minimised</li>
+          <li><span class="trait-dot bad-dot"></span>Peer connections drop silently</li>
+          <li><span class="trait-dot bad-dot"></span>Messages missed while screen is off</li>
+          <li><span class="trait-dot bad-dot"></span>Relay chain collapses</li>
+        </ul>
+      </div>
+      <div class="compare-card good">
+        <div class="compare-verdict">With background service</div>
+        <div class="compare-name">Android Service layer</div>
+        <ul class="compare-traits">
+          <li><span class="trait-dot good-dot"></span>Connections maintained in background</li>
+          <li><span class="trait-dot good-dot"></span>Message relay continues passively</li>
+          <li><span class="trait-dot good-dot"></span>Location updates while app is minimised</li>
+          <li><span class="trait-dot good-dot"></span>Network stays alive between interactions</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="body-text">
+      MVVM was chosen because mesh state is inherently asynchronous and constantly changing &mdash; peers join and leave, messages arrive unpredictably, location updates continuously. With MVVM, the ViewModel holds observable mesh state and the UI reacts to changes without managing lifecycle directly. Without this separation, the UI code becomes unmanageable.
+    </p>
+
+    <!-- ── Reliability challenges ── -->
+    <h2 class="section-heading">Three reliability challenges that came up in testing</h2>
+
+    <div class="problem-grid">
+      <div class="problem-row">
+        <div class="problem-card">
+          <div class="problem-title">Intermittent connections</div>
+          <div class="problem-body">Devices disconnect frequently as people move. The system treats disconnection as a normal operating state and continuously rebuilds the peer list rather than treating it as an error.</div>
+        </div>
+        <div class="problem-card">
+          <div class="problem-title">Duplicate messages</div>
+          <div class="problem-body">Without the seen-message ID set, the same message appears at every device multiple times within seconds. The dedup filter is the single most load-bearing piece of the propagation logic.</div>
+        </div>
+      </div>
+      <div class="problem-row">
+        <div class="problem-card">
+          <div class="problem-title">Network fragmentation</div>
+          <div class="problem-body">The mesh is not always continuous. Some nodes become isolated. The store-and-forward approach means messages can be held and delivered when a connection re-establishes, rather than being dropped.</div>
+        </div>
+        <div class="problem-card">
+          <div class="problem-title">Dynamic topology</div>
+          <div class="problem-body">In testing with ~10 devices over ~25 metre range, the network reshaped itself constantly as people moved. This is expected behaviour, not a failure &mdash; the system is designed to treat topology as unstable.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Pull quote ── -->
+    <blockquote class="pull-quote">
+      &ldquo;Networking in theory is clean. Networking in reality is chaotic. Real systems must handle partial connectivity, unreliable links, and dynamic topology &mdash; and none of that appears in the textbook examples.&rdquo;
+    </blockquote>
+
+    <!-- ── What next ── -->
+    <h2 class="section-heading">What to improve next</h2>
+
+    <p class="body-text">
+      The current propagation model is controlled but still relatively simple &mdash; blind relay with TTL. The next meaningful upgrade is smarter routing: building a partial topology map from observed connections so the system can make informed decisions about which peers to forward through, rather than forwarding to all of them.
+    </p>
+    <p class="body-text">
+      Priority-based messaging would also make a real difference in an emergency context. Not all messages are equal &mdash; an SOS should propagate faster and further than a general message, and the relay logic should reflect that. Better congestion control is the third item, particularly for dense scenarios where many devices are in close range.
+    </p>
+
+    <div class="callout success">
+      <p>Starting fresh: get the deduplication logic right before anything else. It is the difference between a usable network and a flood. Background services are the second priority &mdash; without them, the mesh collapses the moment any device locks its screen.</p>
+    </div>
+
+    <!-- ── Tags ── -->
+    <div class="tag-list">
+      <span class="tag">disastermesh</span>
+      <span class="tag">offline-mesh-networking</span>
+      <span class="tag">android-p2p</span>
+      <span class="tag">google-nearby-connections</span>
+      <span class="tag">decentralized-communication</span>
+      <span class="tag">emergency-tech</span>
+      <span class="tag">bluetooth-wifi-direct</span>
+      <span class="tag">openstreetmap</span>
+      <span class="tag">kotlin</span>
+      <span class="tag">mvvm-android</span>
+    </div>
+
+  </main>
+
+  <script>
+    const bar = document.getElementById('progress-bar');
+    window.addEventListener('scroll', () => {
+      const h = document.documentElement;
+      const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+      bar.style.width = pct + '%';
+    }, { passive: true });
+  </script>
+
+</body>
+</html>

@@ -2,6 +2,21 @@ import '../styles/Blogs.css';
 
 const BLOGS = [
   {
+    title: 'Building DisasterMesh: Offline Mesh Networking for Disaster Scenarios',
+    category: 'Android Systems',
+    date: 'New Post',
+    readTime: '10 min read',
+    href: '/blog/disastermesh-offline-mesh-networking',
+    summary:
+      'A full project walkthrough of DisasterMesh: Android peer-to-peer discovery, multi-hop message relay, TTL-based deduplication, offline mapping, and the engineering realities of decentralized communication.',
+    highlights: [
+      'Bluetooth + Wi-Fi Direct mesh communication without internet',
+      'TTL relay, deduplication, and background-service architecture',
+      'Offline SOS alerts, OpenStreetMap integration, and reliability lessons',
+    ],
+    tags: ['Kotlin', 'Android', 'Mesh Networking', 'Distributed Systems'],
+  },
+  {
     title: 'Building a Real-Time AI Pan-Tilt Tracking System: YOLOv8 + Arduino',
     category: 'Embedded CV',
     date: 'Featured Post',
@@ -32,35 +47,42 @@ export default function Blogs() {
 
         <div className="blogs-grid">
           {BLOGS.map((blog, index) => (
-            <article key={blog.title} className={`blog-card reveal delay-${index + 1}`}>
-              <div className="blog-meta-row">
-                <span className="blog-category">{blog.category}</span>
-                <span className="blog-readtime">{blog.readTime}</span>
-              </div>
+            <a
+              key={blog.title}
+              href={blog.href}
+              className={`blog-card blog-card-link reveal delay-${index + 1}`}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={`Read article: ${blog.title}`}
+            >
+              <article>
+                <div className="blog-meta-row">
+                  <span className="blog-category">{blog.category}</span>
+                  <span className="blog-readtime">{blog.readTime}</span>
+                </div>
 
-              <h3 className="blog-title">{blog.title}</h3>
-              <p className="blog-summary">{blog.summary}</p>
+                <h3 className="blog-title">{blog.title}</h3>
+                <p className="blog-summary">{blog.summary}</p>
 
-              <div className="blog-highlights">
-                {blog.highlights.map((item) => (
-                  <div key={item} className="blog-highlight">
-                    <span className="blog-highlight-dot" />
-                    <span>{item}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="blog-footer">
-                <div className="blog-tags">
-                  {blog.tags.map((tag) => (
-                    <span key={tag} className="blog-tag">{tag}</span>
+                <div className="blog-highlights">
+                  {blog.highlights.map((item) => (
+                    <div key={item} className="blog-highlight">
+                      <span className="blog-highlight-dot" />
+                      <span>{item}</span>
+                    </div>
                   ))}
                 </div>
-                <a href={blog.href} className="blog-link" target="_blank" rel="noreferrer">
-                  Read article -&gt;
-                </a>
-              </div>
-            </article>
+
+                <div className="blog-footer">
+                  <div className="blog-tags">
+                    {blog.tags.map((tag) => (
+                      <span key={tag} className="blog-tag">{tag}</span>
+                    ))}
+                  </div>
+                  <span className="blog-link">Read article -&gt;</span>
+                </div>
+              </article>
+            </a>
           ))}
         </div>
       </div>

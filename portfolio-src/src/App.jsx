@@ -10,18 +10,22 @@ import Certificates from './components/Certificates';
 import DeepSystems from './components/DeepSystems';
 import Contact from './components/Contact';
 import SentryGunBlog from './pages/SentryGunBlog';
+import DisasterMeshBlog from './pages/DisasterMeshBlog';
 
-const BLOG_PATHS = new Set([
-  '/blog/yolov8-arduino-pan-tilt-tracking',
-  '/blog/yolov8-arduino-ai-sentry-gun',
-  '/blog/yolov8-arduino-ai-sentry-gun-computer-vision',
-]);
+const BLOG_ROUTES = {
+  '/blog/yolov8-arduino-pan-tilt-tracking': SentryGunBlog,
+  '/blog/yolov8-arduino-ai-sentry-gun': SentryGunBlog,
+  '/blog/yolov8-arduino-ai-sentry-gun-computer-vision': SentryGunBlog,
+  '/blog/disastermesh-offline-mesh-networking': DisasterMeshBlog,
+};
 
 export default function App() {
   const pathname = window.location.pathname.replace(/\/$/, '') || '/';
 
-  if (BLOG_PATHS.has(pathname)) {
-    return <SentryGunBlog />;
+  const BlogPage = BLOG_ROUTES[pathname];
+
+  if (BlogPage) {
+    return <BlogPage />;
   }
 
   const scrollDepth = useScrollDepth();

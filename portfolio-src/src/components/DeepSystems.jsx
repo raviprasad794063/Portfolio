@@ -4,32 +4,32 @@ const SYSTEMS = [
   {
     icon: '\u26a1',
     name: 'Real-Time ML Inference',
-    desc: 'Optimized pipelines for sub-100ms inference on edge hardware. ONNX export, quantization, and hardware-aware model design.',
+    desc: 'Getting models out of Colab and making them run fast locally. I focus on ONNX exports, quantization, and hitting strict latency budgets on constrained edge hardware.',
   },
   {
     icon: '\ud83d\udd2d',
     name: 'Computer Vision',
-    desc: 'Object detection, tracking, segmentation. From dataset curation to deployment-ready models that hold in production.',
+    desc: 'Building vision pipelines that hold up outside of a clean dataset. I handle custom dataset curation, object tracking, and the messy edge cases of real-world lighting and occlusions.',
   },
   {
     icon: '\ud83d\udef0',
     name: 'Backend APIs',
-    desc: 'Async-first, high-throughput API design. RESTful services built to serve ML models at scale with minimal latency.',
+    desc: 'Writing clean, reliable REST APIs in Spring Boot. I build the structural glue that connects databases to clients and serves ML models without timing out or dropping connections.',
   },
   {
     icon: '\ud83d\udd27',
     name: 'Hardware Integration',
-    desc: 'Bridging software intelligence to physical actuators. Serial comms, GPIO control, embedded system interfaces.',
+    desc: 'Making software move things in the physical world. I write the control loops, manage serial communication latency, and handle the noisy realities of integrating Python with microcontrollers like Arduino.',
   },
   {
     icon: '\ud83c\udf10',
     name: 'Decentralized Networks',
-    desc: 'Resilient mesh architectures that self-heal and self-route. Designed for zero-infrastructure environments.',
+    desc: 'Building offline-first, peer-to-peer communication. Navigating the headaches of node discovery, stale states, and multi-hop routing when you do not have a central server to rely on.',
   },
   {
     icon: '\ud83e\udde0',
-    name: 'Systems Thinking',
-    desc: 'Full-stack view of complex systems. From sensor input to decision output - every layer, every bottleneck, every tradeoff.',
+    name: 'Systems Architecture',
+    desc: 'Caring about the whole pipeline. I track down the bottlenecks - whether it is a slow SQL query, a heavy inference model, or hardware latency - and figure out the right technical trade-off to fix it.',
   },
 ];
 
@@ -86,7 +86,7 @@ export default function DeepSystems() {
             fontWeight: 300,
           }}
         >
-          Technical depth - the deeper you go, the more complex it gets.
+          Technical depth - the deeper you go, the harder the constraints get.
         </p>
 
         <div className="deep-grid reveal delay-1">
